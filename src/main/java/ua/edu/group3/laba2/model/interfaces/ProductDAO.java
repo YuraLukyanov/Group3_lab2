@@ -1,4 +1,4 @@
-package ua.edu.group3.laba2.model.dao;
+package ua.edu.group3.laba2.model.interfaces;
 
 import ua.edu.group3.laba2.model.pojo.Product;
 

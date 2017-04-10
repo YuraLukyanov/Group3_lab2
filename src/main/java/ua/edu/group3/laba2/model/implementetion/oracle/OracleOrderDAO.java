@@ -1,6 +1,6 @@
-package ua.edu.group3.laba2.model.oracle_dao;
+package ua.edu.group3.laba2.model.implementetion.oracle;
 
-import ua.edu.group3.laba2.model.dao.OrderDAO;
+import ua.edu.group3.laba2.model.interfaces.OrderDAO;
 import ua.edu.group3.laba2.model.pojo.Order;
 
 import javax.sql.RowSet;

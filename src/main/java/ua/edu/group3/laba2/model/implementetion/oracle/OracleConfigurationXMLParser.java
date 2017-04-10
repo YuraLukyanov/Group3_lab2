@@ -1,4 +1,4 @@
-package ua.edu.group3.laba2.model.oracle_dao;
+package ua.edu.group3.laba2.model.implementetion.oracle;
 
 /**
  * Created by user on 03.04.2017.

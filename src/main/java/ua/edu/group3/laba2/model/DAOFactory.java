@@ -1,6 +1,9 @@
-package ua.edu.group3.laba2.model.dao;
+package ua.edu.group3.laba2.model;
 
-import ua.edu.group3.laba2.model.oracle_dao.OracleDAOFactory;
+import ua.edu.group3.laba2.model.interfaces.CustomerDAO;
+import ua.edu.group3.laba2.model.interfaces.OrderDAO;
+import ua.edu.group3.laba2.model.interfaces.ProductDAO;
+import ua.edu.group3.laba2.model.implementetion.oracle.OracleDAOFactory;
 
 public abstract class DAOFactory {
 

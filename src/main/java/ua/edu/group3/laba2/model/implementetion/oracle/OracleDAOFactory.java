@@ -1,9 +1,9 @@
-package ua.edu.group3.laba2.model.oracle_dao;
+package ua.edu.group3.laba2.model.implementetion.oracle;
 
-import ua.edu.group3.laba2.model.dao.CustomerDAO;
-import ua.edu.group3.laba2.model.dao.DAOFactory;
-import ua.edu.group3.laba2.model.dao.OrderDAO;
-import ua.edu.group3.laba2.model.dao.ProductDAO;
+import ua.edu.group3.laba2.model.interfaces.CustomerDAO;
+import ua.edu.group3.laba2.model.DAOFactory;
+import ua.edu.group3.laba2.model.interfaces.OrderDAO;
+import ua.edu.group3.laba2.model.interfaces.ProductDAO;
 
 import java.sql.*;
 
