@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans>
+    <bean name="" class="">
+        <property name="" value=""/>
+    </bean>
+
+    <bean name="" class=""/>
+
+    <bean name="" class="">
+        <property name="" ref=""/>
+    </bean>
+
+    <bean name="" class="">
+        <property name="" value=""/>
+        <property name="" ref=""/>
+    </bean>
+
+</beans>
