@@ -16,7 +16,7 @@ public class ServiceController {
 
     public ServiceController(String httpRequestServiceName,
                              List<String> httpRequestServiceParam) {
-        
+
         createResponseCollection(httpRequestServiceName, httpRequestServiceParam);
 
     }

@@ -21,14 +21,13 @@ public class HttpServerResponseTest {
                 "<li>200</li>" +
                 "<li>null</li>" +
                 "</ol>";
-        String serviceName = "search";
         List<String> serviceParam = new ArrayList<>();
         serviceParam.add(null);
         serviceParam.add("green");
         serviceParam.add("200");
         serviceParam.add(null);
-        HttpServerResponse httpServerResponse = new HttpServerResponse(serviceName, serviceParam);
-        String serverResponse = httpServerResponse.convertCollectionToHtml(serviceParam);
+
+        String serverResponse = HttpServerResponse.convertCollectionToHtml(serviceParam);
 
         assertEquals("Response is not right", result, serverResponse);
 

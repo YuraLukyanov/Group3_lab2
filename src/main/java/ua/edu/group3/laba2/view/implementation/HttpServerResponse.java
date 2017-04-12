@@ -30,7 +30,7 @@ public class HttpServerResponse {
     private void createResponse(String content) {
     }
 
-    public String convertCollectionToHtml(Collection collection){
+    public static String convertCollectionToHtml(Collection collection){
         return null;
     }
 
