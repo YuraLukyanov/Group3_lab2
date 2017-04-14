@@ -1,8 +1,6 @@
 package ua.edu.group3.laba2.controller.implementation;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 /**
@@ -15,10 +13,32 @@ public class ClientSession extends Thread {
 
     public ClientSession(Socket socket) throws IOException {
         this.socket = socket;
+        initialize();
     }
 
-    @Override
+    protected void initialize() throws IOException {
+        //Get input stream to get request
+        in = socket.getInputStream();
+        //Get output stream to send response
+        out = socket.getOutputStream();
+
+    }
+
     public void run() {
-        super.run();
+        try {
+            String request = "";
+            BufferedReader bufReader = new BufferedReader(new InputStreamReader(in));
+            while (bufReader.ready()) {
+                request += (char) bufReader.read();
+            }
+            bufReader.close();
+            
+            HttpRequest httpRequest = new HttpRequest(request);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

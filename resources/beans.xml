@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beans>
-    <bean name="" class="">
+    <bean name="addProduct" class="ua.edu.group3.laba2.model.services.AddProduct">
         <property name="" value=""/>
     </bean>
 

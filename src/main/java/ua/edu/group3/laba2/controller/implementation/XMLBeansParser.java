@@ -27,7 +27,4 @@ public class XMLBeansParser {
         return file;
     }
 
-    public void setFile(File file) {
-        this.file = file;
-    }
 }
