@@ -1,5 +1,6 @@
 package ua.edu.group3.laba2.controller.implementation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,5 +25,15 @@ public class ServiceController {
     private void createResponseCollection(String httpRequestServiceName,
                                           List<String> httpRequestServiceParam) {
         // TODO: 11.04.2017
+        //TEMP realization
+        //Example: http://localhost:9999/search?product=yes&price=100500&
+        ArrayList<String> tempResponseCollection = new ArrayList<>();
+        tempResponseCollection.add(httpRequestServiceName);
+        if (!httpRequestServiceParam.isEmpty()) {
+            for (String element : httpRequestServiceParam) {
+                tempResponseCollection.add(element);
+            }
+        }
+        collection = tempResponseCollection;
     }
 }

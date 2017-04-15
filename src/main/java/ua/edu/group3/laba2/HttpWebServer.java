@@ -15,7 +15,7 @@ public class HttpWebServer {
 
     public static void main(String[] args) {
         int port = 9999;
-        if(!Container.getInstance().init(new File(""))){
+        if (!Container.getInstance().init(new File(""))) {
             System.out.println("Server not started. Can't init container");
             System.exit(-1);
         }

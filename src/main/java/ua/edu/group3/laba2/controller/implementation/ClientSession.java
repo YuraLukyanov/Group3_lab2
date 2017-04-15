@@ -1,5 +1,7 @@
 package ua.edu.group3.laba2.controller.implementation;
 
+import ua.edu.group3.laba2.view.implementation.HttpServerResponse;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -24,21 +26,32 @@ public class ClientSession extends Thread {
 
     }
 
+    @Override
     public void run() {
+        BufferedReader bufReader = null;
         try {
             String request = "";
-            BufferedReader bufReader = new BufferedReader(new InputStreamReader(in));
+            bufReader = new BufferedReader(new InputStreamReader(in));
             while (bufReader.ready()) {
                 request += (char) bufReader.read();
             }
-            bufReader.close();
-            
             HttpRequest httpRequest = new HttpRequest(request);
+            HttpServerResponse httpServerResponse = new HttpServerResponse(
+                    httpRequest.getServiceName(),
+                    httpRequest.getServiceParam());
+            PrintStream answer = new PrintStream(out, true, "UTF-8");
+            answer.print(httpServerResponse.getResponse());
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                bufReader.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
 
     }
 }

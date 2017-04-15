@@ -16,14 +16,14 @@ public class Container {
     }
 
     public boolean init(File file) {
-        return false;
+        return true;
     }
 
     public Object getBean(String name) {
         return null;
     }
 
-    public <T> Object getBean(String name, Class<T> type) {
+    public <T> T getBean(String name, Class<T> type) {
         return null;
     }
 
@@ -31,7 +31,7 @@ public class Container {
         return null;
     }
 
-    public File getFile() {
+    protected File getFile() {
         return file;
     }
 
