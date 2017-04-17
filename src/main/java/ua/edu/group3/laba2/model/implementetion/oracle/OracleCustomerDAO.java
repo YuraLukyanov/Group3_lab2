@@ -1,17 +1,19 @@
 package ua.edu.group3.laba2.model.implementetion.oracle;
 
-import ua.edu.group3.laba2.model.interfaces.CustomerDAO;
+import ua.edu.group3.laba2.model.interfaces.dao.CustomerDAO;
 import ua.edu.group3.laba2.model.pojo.Customer;
 
 import javax.sql.RowSet;
+import java.sql.Connection;
 import java.util.Collection;
 
-/**
- * Created by user on 03.04.2017.
- */
 public class OracleCustomerDAO implements CustomerDAO {
 
-    public int insertCustomer() {
+    public int insertCustomer(Customer customer) {
+        Connection connection = OracleDAOFactory.createConnection();
+        //TODO
+        OracleDAOFactory.closeConnection();
+
         return 0;
     }
 
@@ -23,15 +25,12 @@ public class OracleCustomerDAO implements CustomerDAO {
         return null;
     }
 
-    public boolean updateCustomer(int id) {
+    public boolean updateCustomer(int id, Customer newCustomer) {
         return false;
     }
 
-    public RowSet selectCustomersRS() {
+    public Collection<Customer> selectCustomersTO(Customer filterCustomer) {
         return null;
     }
 
-    public Collection selectCustomersTO() {
-        return null;
-    }
 }

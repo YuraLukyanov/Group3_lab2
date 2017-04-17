@@ -1,16 +1,13 @@
 package ua.edu.group3.laba2.model.implementetion.oracle;
 
-import ua.edu.group3.laba2.model.interfaces.OrderDAO;
+import ua.edu.group3.laba2.model.interfaces.dao.OrderDAO;
 import ua.edu.group3.laba2.model.pojo.Order;
 
 import javax.sql.RowSet;
 import java.util.Collection;
 
-/**
- * Created by user on 03.04.2017.
- */
 public class OracleOrderDAO implements OrderDAO {
-    public int insertOrder() {
+    public int insertOrder(Order order) {
         return 0;
     }
 
@@ -22,15 +19,11 @@ public class OracleOrderDAO implements OrderDAO {
         return null;
     }
 
-    public boolean updateOrder(int id) {
+    public boolean updateOrder(int id, Order newOrder) {
         return false;
     }
 
-    public RowSet selectOrderRS() {
-        return null;
-    }
-
-    public Collection selectOrderTO() {
+    public Collection<Order> selectOrderTO(Order filterOrder) {
         return null;
     }
 }
