@@ -2,6 +2,8 @@ package ua.edu.group3.laba2.controller.implementation;
 
 import org.junit.Before;
 import org.junit.Test;
+import ua.edu.group3.laba2.controller.test_services.Product;
+import ua.edu.group3.laba2.controller.test_services.TestAddProduct;
 import ua.edu.group3.laba2.model.services.AddProduct;
 import java.io.File;
 import java.util.ArrayList;
@@ -13,8 +15,6 @@ import static org.junit.Assert.*;
  * Created by Nikolion on 11.04.2017.
  */
 public class ContainerTest {
-    File goodFile1 = new File("");
-    File badFile = new File("");
     @Before
     public void getInstanceOfContainer() throws Exception {
         assertNotNull("Container instance is NULL",Container.getInstance());
@@ -24,33 +24,49 @@ public class ContainerTest {
 
     @Before
     public void initContainer() throws Exception {
-        //assertFalse("Container init from bad file",Container.getInstance().init(badFile));
-        assertTrue("Container not init", Container.getInstance().init(goodFile1));
+        String path = getClass().getClassLoader().getResource("test_beans.xml").getPath();
+        assertFalse("Container init from bad file",Container.getInstance().init(path+"lala"));
+        assertTrue("Container not init", Container.getInstance().init(path));
 
     }
 
     @Test
     public void getBeanByName() throws Exception {
-        Object testAddProduct = Container.getInstance().getBean("addProduct");
-        assertTrue(testAddProduct instanceof AddProduct);
+        TestAddProduct addProduct = new TestAddProduct();
+        Product product = new Product();
+        addProduct.setProduct(product);
+        Object testAddProduct = Container.getInstance().getBean("testAddProduct");
+
+        Product realProduct = new Product();
+        realProduct.setId(500);
+        realProduct.setType("computer");
+        Object testProduct = Container.getInstance().getBean("someProduct1");
+
+        assertEquals("Products are not equal",realProduct,testProduct);
+        assertEquals("AddProducts are not equal",addProduct,testAddProduct);
     }
 
     @Test
     public void getBeanByNameAndClass() throws Exception {
-
+        TestAddProduct addProduct = new TestAddProduct();
+        Class t = addProduct.getClass();
         assertEquals("Classes not Equal",
-                Container.getInstance().getBean("addProduct", AddProduct.class).getClass(),
-                AddProduct.class);
+                Container.getInstance().getBean("testAddProduct",
+                        TestAddProduct.class).getClass(),TestAddProduct.class );
     }
 
     @Test
     public void getBeanByClass() throws Exception {
-        Collection testCollection = Container.getInstance().getBean(AddProduct.class);
-        Collection tempCollection = new ArrayList();
-        testCollection.add(new AddProduct());
+        Collection collectionFromContainer = Container.getInstance().getBean(Product
+                .class);
         assertTrue("The quantity does not match",
-                testCollection instanceof Collection
-                && testCollection.size()==tempCollection.size());
+                collectionFromContainer instanceof Collection
+                && collectionFromContainer.size()==2);
+
+        for (Object m:collectionFromContainer) {
+            assertTrue("Object not instance of Product",m instanceof Product);
+        }
+
     }
 
     @Test

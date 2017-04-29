@@ -35,12 +35,14 @@ public class ClientSession extends Thread {
             while (bufReader.ready()) {
                 request += (char) bufReader.read();
             }
-            HttpRequest httpRequest = new HttpRequest(request);
-            HttpServerResponse httpServerResponse = new HttpServerResponse(
-                    httpRequest.getServiceName(),
-                    httpRequest.getServiceParam());
-            PrintStream answer = new PrintStream(out, true, "UTF-8");
-            answer.print(httpServerResponse.getResponse());
+            if (!request.isEmpty()) {
+                HttpRequest httpRequest = new HttpRequest(request);
+                HttpServerResponse httpServerResponse = new HttpServerResponse(
+                        httpRequest.getServiceName(),
+                        httpRequest.getServiceParam());
+                PrintStream answer = new PrintStream(out, true, "UTF-8");
+                answer.print(httpServerResponse.getResponse());
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

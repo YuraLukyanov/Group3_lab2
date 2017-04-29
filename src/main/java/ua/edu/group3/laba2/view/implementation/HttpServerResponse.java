@@ -10,8 +10,8 @@ import java.util.List;
  * Created by Nikolion on 11.04.2017.
  */
 public class HttpServerResponse {
-    private String response;
-    private String content;
+    private String response="";
+    private String content="";
 
     public String getResponse() {
         return response;
@@ -26,13 +26,13 @@ public class HttpServerResponse {
         createResponse(content);
     }
 
-    private void createResponse(String content) {
+    protected void createResponse(String content) {
         StringBuilder htmlPage = new StringBuilder();
         htmlPage.append("<html><body>");
         htmlPage.append(content);
         htmlPage.append("</body></html>");
         String response1 = "HTTP/1.1 200 OK\r\n" +
-                "Date: " + new Date().toGMTString() +"\r\n" +
+                "Date: " + new Date().toLocaleString() +"\r\n" +
                 "Server: MY SERVER\r\n" +
                 "Content-Type: text/html\r\n" +
                 "Content-Length: " + htmlPage.length() + "\r\n" +
