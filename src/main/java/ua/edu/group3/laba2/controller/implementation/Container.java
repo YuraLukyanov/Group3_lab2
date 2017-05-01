@@ -29,7 +29,10 @@ public class Container {
         File fileWithXML = new File(pathToFile);
         if (fileWithXML.exists()) {
             this.pathToFile = pathToFile;
-            XMLBeansParser xmlBeansParser = new DOMXMLBeansParser(fileWithXML);
+            XMLBeansParser xmlBeansParser = new DOMXMLBeansParser();
+            //XMLBeansParser xmlBeansParser = new SAXXMLBeansParser();
+            xmlBeansParser.setFile(fileWithXML);
+
 
             if (xmlBeansParser.parseBeans()) {
                 beans = xmlBeansParser.getBeans();
