@@ -12,9 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 
 /**
@@ -47,121 +45,104 @@ public class DOMXMLBeansParser implements XMLBeansParser {
         if (file == null) {
             return false;
         }
-        ArrayList<Node> beansWithRef = new ArrayList<>();
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             Document document = builder.parse(file);
+            Bean bean = null;
+            Map<String, Bean> mapWithTempBeans = new HashMap<>();
             NodeList beansNodeList = document.getElementsByTagName("bean");
             for (int i = 0; i < beansNodeList.getLength(); i++) {
                 Node nodeBean = beansNodeList.item(i);
                 if (nodeBean.getNodeType() == Node.ELEMENT_NODE) {
-
                     Element elementBean = (Element) nodeBean;
+                    String name = elementBean.getAttribute("id");
+                    String className = elementBean.getAttribute("class");
+
+                    bean = new Bean(name, className);
+
                     NodeList propertyNodeListOfBean = elementBean.getElementsByTagName("property");
-                    if (propertyNodeListOfBean.getLength() == 0) {
-                        String name = ((Element) nodeBean).getAttribute("id");
-                        getBeans().put(name, Class.forName(((Element) nodeBean).getAttribute("class")).newInstance());
-                    } else {
-                        if (isBeanContainsRef(propertyNodeListOfBean)) {
-                            beansWithRef.add(nodeBean);
-                        } else {
-                            parseBeanWithValues(nodeBean);
-                        }
-                    }
+                    bean = parseProperty(bean, propertyNodeListOfBean);
+                    mapWithTempBeans.put(bean.id, bean);
                 }
             }
-            parseBeansWithRefs(beansWithRef);
+            createBeans(mapWithTempBeans);
 
         } catch (ParserConfigurationException | SAXException |
-                InvocationTargetException | InstantiationException | IOException |
-                ClassNotFoundException | IllegalAccessException e) {
+                IllegalArgumentException | InstantiationException |
+                IOException | ClassNotFoundException |
+                InvocationTargetException |
+                IllegalAccessException e) {
             e.printStackTrace();
             return false;
         }
         return true;
     }
 
-    protected void parseBeanWithValues(Node nodeBean) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException {
-        Element elementBean = (Element) nodeBean;
-        String name = ((Element) elementBean).getAttribute("id");
-        Class beanClass = Class.forName(((Element) elementBean).getAttribute("class"));
+    protected void createBeans(Map<String, Bean> mapWithTempBeans) throws
+            ClassNotFoundException, InstantiationException,
+            IllegalAccessException, InvocationTargetException, IllegalArgumentException {
+        for (Map.Entry<String, Bean> entry : mapWithTempBeans.entrySet()) {
+            if (beans.get(entry.getKey()) == null) {
+                tryCreateBean(entry.getKey(), mapWithTempBeans);
+            } else continue;
+        }
+    }
 
-        Object obj = Class.forName(((Element) elementBean).getAttribute("class")).newInstance();
+    protected void tryCreateBean(String key, Map<String, Bean>
+            mapWithTempBeans)  throws ClassNotFoundException,
+            IllegalAccessException, InstantiationException,
+            InvocationTargetException, IllegalArgumentException {
+        Bean bean = mapWithTempBeans.get(key);
+        Class beanClass = Class.forName(mapWithTempBeans.get(key).className);
+        Object beanObj = beanClass.newInstance();
+        Method[] methods = beanClass.getMethods();
 
-        NodeList propertyNodeListOfBean = elementBean.getElementsByTagName("property");
-        for (int j = 0; j < propertyNodeListOfBean.getLength(); j++) {
-            Element property = (Element) propertyNodeListOfBean.item(j);
-            String methodName = "set" + property.getAttribute("name");
-            String value = "";
-            value = property.getAttribute("value");
-            Object val = null;
-            if (!value.isEmpty()) {
-                val = interpretation(value);
-            }
-
-            Method[] methods = beanClass.getMethods();
-
+        for (Map.Entry<String, String> entryValueProperty : bean.propertyVal.entrySet()) {
+            Object val = interpretation(entryValueProperty.getValue());
             for (Method m : methods) {
-                if (m.getName().equalsIgnoreCase(methodName)) {
+                if (m.getName().equalsIgnoreCase("set" + entryValueProperty.getKey())) {
                     Object[] args = new Object[]{val};
-                    m.invoke(obj, args);
+                    m.invoke(beanObj, args);
+                    break;
                 }
             }
         }
-        getBeans().put(name, obj);
-    }
 
-    protected void parseBeansWithRefs(ArrayList<Node> beansWithRef) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException {
-        for (int i = 0; i < beansWithRef.size(); i++) {
-            Element elementBean = (Element) beansWithRef.get(i);
-            String name = ((Element) elementBean).getAttribute("id");
-            Class beanClass = Class.forName(((Element) elementBean).getAttribute("class"));
-
-            Object obj = Class.forName(((Element) elementBean).getAttribute("class")).newInstance();
-
-
-            NodeList propertyNodeListOfBean = elementBean.getElementsByTagName("property");
-            for (int j = 0; j < propertyNodeListOfBean.getLength(); j++) {
-                Element property = (Element) propertyNodeListOfBean.item(j);
-                String methodName = "set" + property.getAttribute("name");
-                String value = "";
-                String ref = "";
-                value = property.getAttribute("value");
-                ref = property.getAttribute("ref");
-                Object val = null;
-                if (!value.isEmpty()) {
-                    val = interpretation(value);
-                } else if (!ref.isEmpty()) {
-                    val = beans.get(ref);
+        for (Map.Entry<String, String> entryRefProperty : bean.propertyRef.entrySet()) {
+            Object ref = beans.get(entryRefProperty.getValue());
+            if (ref == null) {
+                if (mapWithTempBeans.containsKey(entryRefProperty.getValue())) {
+                    tryCreateBean(entryRefProperty.getValue(), mapWithTempBeans);
+                } else {
+                    throw new IllegalArgumentException();
                 }
-
-                Method[] methods = beanClass.getMethods();
-
+                ref = beans.get(entryRefProperty.getValue());
+            }
                 for (Method m : methods) {
-                    if (m.getName().equalsIgnoreCase(methodName)) {
-                        Object[] args = new Object[]{val};
-                        m.invoke(obj, args);
+                    if (m.getName().equalsIgnoreCase("set" + entryRefProperty.getKey())) {
+                        Object[] args = new Object[]{ref};
+                        m.invoke(beanObj, args);
+                        break;
                     }
                 }
-            }
-            getBeans().put(name, obj);
-
         }
+        beans.put(key, beanObj);
     }
 
-    protected boolean isBeanContainsRef(NodeList propertyNodeListOfBean) {
-        for (int j = 0; j < propertyNodeListOfBean.getLength(); j++) {
-            Element propertyAttribute = (Element) propertyNodeListOfBean.item(j);
-            String ref;
-            ref = propertyAttribute.getAttribute("ref");
-            if (!ref.isEmpty()) {
-                return true;
+    protected Bean parseProperty(Bean bean, NodeList propertyNodeListOfBean) {
+        for (int i = 0; i < propertyNodeListOfBean.getLength(); i++) {
+            Element property = (Element) propertyNodeListOfBean.item(i);
+            String name = property.getAttribute("name");
+            if (!property.getAttribute("value").isEmpty()) {
+                bean.propertyVal.put(name, property.getAttribute("value"));
+                continue;
+            } else if (!property.getAttribute("ref").isEmpty()) {
+                bean.propertyRef.put(name, property.getAttribute("ref"));
             }
         }
-        return false;
+        return bean;
     }
-
 
     protected Object interpretation(String s) {
         Scanner sc = new Scanner(s);
@@ -171,5 +152,21 @@ public class DOMXMLBeansParser implements XMLBeansParser {
                                 sc.hasNextDouble() ? sc.nextDouble() :
                                         sc.hasNext() ? sc.next() :
                                                 s;
+    }
+
+    private class Bean {
+
+        Bean(String id, String className) throws NullPointerException {
+            if (id.isEmpty() || className.isEmpty()) {
+                throw new NullPointerException();
+            }
+            this.id = id;
+            this.className = className;
+        }
+
+        String id;
+        String className;
+        Map<String, String> propertyVal = new HashMap<>();
+        Map<String, String> propertyRef = new HashMap<>();
     }
 }
