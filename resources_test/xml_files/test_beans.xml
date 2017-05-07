@@ -12,17 +12,17 @@
                 ]>
 -->
 <beans>
-    <bean id="someProduct" class="ua.edu.group3.laba2.controller.test_services.Product"/>
-   <bean id="basket" class="ua.edu.group3.laba2.controller.test_services.Basket">
+    <bean id="someProduct" class="controller.test_services.Product"/>
+   <bean id="basket" class="controller.test_services.Basket">
         <property name="position" value="2"/>
         <property name="addProduct" ref="testAddProduct"/>
     </bean>
 
-    <bean id="testAddProduct" class="ua.edu.group3.laba2.controller.test_services.TestAddProduct">
+    <bean id="testAddProduct" class="controller.test_services.TestAddProduct">
         <property name="product" ref="someProduct1"/>
     </bean>
 
-    <bean id="someProduct1" class="ua.edu.group3.laba2.controller.test_services.Product">
+    <bean id="someProduct1" class="controller.test_services.Product">
         <property name="id" value="555"/>
         <property name="type" value="computer"/>
     </bean>
