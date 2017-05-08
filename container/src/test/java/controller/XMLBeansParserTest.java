@@ -21,7 +21,7 @@ public class XMLBeansParserTest {
     Product testProduct2 = new Product();
     TestAddProduct addProduct = new TestAddProduct();
     {
-        testProduct2.setId(500);
+        testProduct2.setId(555);
         testProduct2.setType("computer");
         addProduct.setProduct(testProduct1);
     }

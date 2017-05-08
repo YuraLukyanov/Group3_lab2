@@ -37,7 +37,7 @@ public class ContainerTest {
         Object testAddProduct = Container.getInstance().getBean("testAddProduct");
 
         Product realProduct = new Product();
-        realProduct.setId(500);
+        realProduct.setId(555);
         realProduct.setType("computer");
         Object testProduct = Container.getInstance().getBean("someProduct1");
 

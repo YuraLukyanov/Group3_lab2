@@ -13,7 +13,6 @@
     <artifactId>web_server</artifactId>
     <packaging>jar</packaging>
     <name>web_server</name>
-
     <dependencies>
         <dependency>
             <groupId>ua.edu.group3.laba2</groupId>
