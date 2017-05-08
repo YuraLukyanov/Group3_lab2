@@ -11,7 +11,7 @@
         <!ATTLIST property valuen CDATA>
                 ]>
 -->
-<beans> 
+<beans>
     <bean id="someProduct" class="ua.edu.group3.laba2.controller.test_services.Product"/>
    <bean id="basket" class="ua.edu.group3.laba2.controller.test_services.Basket">
         <property name="position" value="2"/>
