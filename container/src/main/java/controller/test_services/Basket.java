@@ -34,4 +34,24 @@ public class Basket {
                 ", position=" + position +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Basket)) return false;
+
+        Basket basket = (Basket) o;
+
+        if (position != basket.getPosition()) return false;
+        return addProduct != null ? addProduct.equals(basket.getAddProduct()) : basket
+                .addProduct == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = addProduct != null ? addProduct.hashCode() : 0;
+        result = 31 * result + position;
+        return result;
+    }
 }

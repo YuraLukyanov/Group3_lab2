@@ -23,8 +23,7 @@ import java.util.Scanner;
  */
 public class SAXXMLBeansParser implements XMLBeansParser {
     protected Map<String, Object> beans = Maps.newHashMap();
-    private ArrayList<Bean> beansWithRef = new ArrayList<>();
-    File file;
+    protected File file;
 
     public SAXXMLBeansParser(File file) {
         this.file = file;
@@ -45,6 +44,7 @@ public class SAXXMLBeansParser implements XMLBeansParser {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
+            final Map<String, Bean> mapWithTempBeans = new HashMap<>();
             DefaultHandler handler = new DefaultHandler() {
                 Bean bean = new Bean();
 
@@ -59,7 +59,8 @@ public class SAXXMLBeansParser implements XMLBeansParser {
                     if (qName.equalsIgnoreCase("property")) {
                         String name = attributes.getValue("name");
                         if (attributes.getValue("value") != null) {
-                            bean.property.put(name, attributes.getValue("value"));
+                            bean.propertyVal.put(name, attributes.getValue
+                                    ("value"));
                         } else if (attributes.getValue("ref") != null) {
                             bean.propertyRef.put(name, attributes.getValue("ref"));
                         }
@@ -69,48 +70,74 @@ public class SAXXMLBeansParser implements XMLBeansParser {
 
                 @Override
                 public void endElement(String uri, String localName, String qName) throws SAXException {
-                    try {
                         if (qName.equalsIgnoreCase("bean")) {
-                            if (bean.propertyRef.size() > 0) {
-
-                                beansWithRef.add(bean);
-
-                            } else if (bean.property.size() > 0) {
-
-                                String name = bean.id;
-                                Object obj = Class.forName(bean.className).newInstance();
-                                getBeans().put(name,setBeanValuesProperty(obj,bean.property));
-
-                            } else {
-                                getBeans().put(bean.id, Class.forName(bean.className).newInstance());
-                            }
+                            mapWithTempBeans.put(bean.id,bean);
                             bean = new Bean();
                         }
-                    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                        e.printStackTrace();
-                        throw new SAXException(e);
-                    }
-
                 }
             };
 
             parser.parse(file, handler);
-
-            for (Bean bean : beansWithRef) {
-                String name = bean.id;
-                Object obj = Class.forName(bean.className).newInstance();
-                obj = setBeanValuesProperty(obj,bean.property);
-                obj = setBeanRefProperty(obj,bean.propertyRef);
-                getBeans().put(name,obj);
-            }
+            createBeans(mapWithTempBeans);
 
         } catch (ParserConfigurationException | SAXException | IOException |
-                IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+                IllegalAccessException |  InstantiationException |
+                ClassNotFoundException | InvocationTargetException e) {
             e.printStackTrace();
             return false;
         }
-
         return true;
+    }
+
+    protected void createBeans(Map<String, Bean> mapWithTempBeans) throws
+            ClassNotFoundException, InstantiationException,
+            IllegalAccessException, InvocationTargetException, IllegalArgumentException {
+        for (Map.Entry<String, Bean> entry : mapWithTempBeans.entrySet()) {
+            if (beans.get(entry.getKey()) == null) {
+                tryCreateBean(entry.getKey(), mapWithTempBeans);
+            } else continue;
+        }
+    }
+
+    protected void tryCreateBean(String key, Map<String, Bean>
+            mapWithTempBeans)  throws ClassNotFoundException,
+            IllegalAccessException, InstantiationException,
+            InvocationTargetException, IllegalArgumentException {
+        Bean bean = mapWithTempBeans.get(key);
+        Class beanClass = Class.forName(mapWithTempBeans.get(key).className);
+        Object beanObj = beanClass.newInstance();
+        Method[] methods = beanClass.getMethods();
+
+        for (Map.Entry<String, String> entryValueProperty : bean.propertyVal.entrySet()) {
+            Object val = interpretation(entryValueProperty.getValue());
+            for (Method m : methods) {
+                if (m.getName().equalsIgnoreCase("set" + entryValueProperty.getKey())) {
+                    Object[] args = new Object[]{val};
+                    m.invoke(beanObj, args);
+                    break;
+                }
+            }
+        }
+
+        for (Map.Entry<String, String> entryRefProperty : bean.propertyRef.entrySet()) {
+            Object ref = beans.get(entryRefProperty.getValue());
+            if (ref == null) {
+                if (mapWithTempBeans.containsKey(entryRefProperty.getValue())) {
+                    tryCreateBean(entryRefProperty.getValue(), mapWithTempBeans);
+                } else {
+                    throw new IllegalArgumentException();
+                }
+                ref = beans.get(entryRefProperty.getValue());
+            }
+            for (Method m : methods) {
+                if (m.getName().equalsIgnoreCase("set" + entryRefProperty.getKey())) {
+                    Object[] args = new Object[]{ref};
+                    m.invoke(beanObj, args);
+                    break;
+                }
+            }
+        }
+        beans.put(key, beanObj);
     }
 
     protected Object interpretation(String s) {
@@ -123,61 +150,10 @@ public class SAXXMLBeansParser implements XMLBeansParser {
                                                 s;
     }
 
-    protected Object setBeanValuesProperty(Object obj, Map<String, String> property) {
-        try {
-            for (Map.Entry<String, String> entry : property.entrySet()) {
-                String methodName = "set" + entry.getKey();
-                String value = entry.getValue();
-                Object val = null;
-                if (!value.isEmpty()) {
-                    val = interpretation(value);
-                }
-                Class beanClass = obj.getClass();
-                Method[] methods = beanClass.getMethods();
-
-                for (Method m : methods) {
-                    if (m.getName().equalsIgnoreCase(methodName)) {
-                        Object[] args = new Object[]{val};
-                        m.invoke(obj, args);
-                    }
-                }
-
-            }
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
-    protected Object setBeanRefProperty(Object obj, Map<String, String> propertyRef) {
-        try {
-            for (Map.Entry<String, String> entry : propertyRef.entrySet()) {
-                String methodName = "set" + entry.getKey();
-                String ref = entry.getValue();
-                Object refObject = beans.get(ref);
-                if (refObject!=null) {
-                    Class beanClass = obj.getClass();
-                    Method[] methods = beanClass.getMethods();
-
-                    for (Method m : methods) {
-                        if (m.getName().equalsIgnoreCase(methodName)) {
-                            Object[] args = new Object[]{refObject};
-                            m.invoke(obj, args);
-                        }
-                    }
-                }
-
-
-            }
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
-
     private class Bean {
         String id;
         String className;
-        Map<String, String> property = new HashMap<>();
+        Map<String, String> propertyVal = new HashMap<>();
         Map<String, String> propertyRef = new HashMap<>();
     }
 }
