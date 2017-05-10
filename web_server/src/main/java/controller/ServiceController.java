@@ -2,7 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Nikolion on 11.04.2017.
@@ -16,14 +16,14 @@ public class ServiceController {
     }
 
     public ServiceController(String httpRequestServiceName,
-                             List<String> httpRequestServiceParam) {
+                             Map<String,String> httpRequestServiceParam) {
 
         createResponseCollection(httpRequestServiceName, httpRequestServiceParam);
 
     }
 
     private void createResponseCollection(String httpRequestServiceName,
-                                          List<String> httpRequestServiceParam) {
+                                          Map<String,String> httpRequestServiceParam) {
 
         /*switch (httpRequestServiceName) {
             case ("search"): //do something...
@@ -37,10 +37,10 @@ public class ServiceController {
         //TEMP realization
         //Example: http://localhost:9999/search?product=yes&price=100500&
         ArrayList<String> tempResponseCollection = new ArrayList<>();
-        tempResponseCollection.add(httpRequestServiceName);
+        tempResponseCollection.add("service=" + httpRequestServiceName);
         if (!httpRequestServiceParam.isEmpty()) {
-            for (String element : httpRequestServiceParam) {
-                tempResponseCollection.add(element);
+            for (Map.Entry<String,String> element : httpRequestServiceParam.entrySet()) {
+                tempResponseCollection.add(element.getKey() + "=" + element.getValue());
             }
         }
         collection = tempResponseCollection;

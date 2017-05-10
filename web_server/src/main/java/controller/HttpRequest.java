@@ -1,7 +1,7 @@
 package controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Nikolion on 11.04.2017.
@@ -11,7 +11,7 @@ public class HttpRequest {
         return serviceName;
     }
 
-    public List<String> getServiceParam() {
+    public Map<String,String> getServiceParam() {
         return serviceParam;
     }
 
@@ -20,7 +20,7 @@ public class HttpRequest {
     }
 
     private String serviceName;
-    private List<String> serviceParam = new ArrayList<>();
+    private Map<String,String> serviceParam = new HashMap<>();
 
     protected void parseStringRequestToValues(String request) {
         try {
@@ -49,11 +49,13 @@ public class HttpRequest {
                     String[] params = requestServiceNameParamRows[1].split("\\&");
                     for (String param : params) {
                         String paramValue = "";
+                        String pramName = "";
                         try {
+                            pramName = param.split("\\=")[0];
                             paramValue = param.split("\\=")[1];
-                            serviceParam.add(paramValue);
+                            serviceParam.put(pramName,paramValue);
                         } catch (IndexOutOfBoundsException e) {
-                            serviceParam.add(null);
+                            serviceParam.put(pramName,null);
                         }
 
                     }

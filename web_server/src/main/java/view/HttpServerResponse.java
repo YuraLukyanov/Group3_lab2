@@ -4,7 +4,7 @@ package view;
 import controller.ServiceController;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Nikolion on 11.04.2017.
@@ -18,7 +18,7 @@ public class HttpServerResponse {
     }
 
     public HttpServerResponse(String httpRequestServiceName,
-                              List<String> httpRequestServiceParam) {
+                              Map<String,String> httpRequestServiceParam) {
 
         ServiceController serviceController = new ServiceController(
                 httpRequestServiceName, httpRequestServiceParam);
