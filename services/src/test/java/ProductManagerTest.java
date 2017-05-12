@@ -23,7 +23,7 @@ public class ProductManagerTest {
     }
 
     @Test
-    public void addAndGet() {
+    public void addAndGet() throws Exception{
         Product product1 = new Product("Cup", "red", 100, 300, 10);
         Product product2 = new Product("Mug", "blue", 100, 300, 10);
         Product product3 = new Product("Beautiful cup", "black", 100, 300, 30);
@@ -103,7 +103,7 @@ public class ProductManagerTest {
     }
 
     @Test
-    public void delete() {
+    public void delete() throws Exception {
         Product product1 = new Product("one", "sdfsdf", 10, 10, 10);
         Product product2 = new Product("two", "sdfsdf", 10, 10, 10);
         Product product3 = new Product("three", "sdfsdf", 10, 10, 10);
