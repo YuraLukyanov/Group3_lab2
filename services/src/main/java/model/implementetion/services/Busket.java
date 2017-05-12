@@ -3,6 +3,7 @@ package model.implementetion.services;
 import model.implementetion.services.util.ProductAndAmount;
 import model.interfaces.services.IAuthorization;
 import model.interfaces.services.IBusket;
+import model.interfaces.services.IProductManager;
 import model.pojo.Order;
 import model.pojo.Product;
 import org.slf4j.Logger;
@@ -16,13 +17,14 @@ public class Busket implements IBusket {
 
     private LinkedHashSet<ProductAndAmount> productsAndAmounts = new LinkedHashSet<ProductAndAmount>();
     private IAuthorization authorization;
+    private IProductManager productManager;
 
     public void setAuthorization(IAuthorization authorization) {
         this.authorization = authorization;
     }
 
-    public int add(Product product) throws Exception {
-        ProductAndAmount productAndAmount = new ProductAndAmount(product);
+    public int add(int id) throws Exception {
+        Product product = productManager.get(id);
 
         if (productsAndAmounts.add(new ProductAndAmount(product))) {
             return productsAndAmounts.size() - 1; //return index of recently added element
@@ -69,5 +71,9 @@ public class Busket implements IBusket {
             i++;
         }
         return null;
+    }
+
+    public void setProductManager(IProductManager productManager) {
+        this.productManager = productManager;
     }
 }

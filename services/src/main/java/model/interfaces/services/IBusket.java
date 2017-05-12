@@ -7,7 +7,7 @@ import model.pojo.Product;
 import java.util.Collection;
 
 public interface IBusket {
-    int add(Product product) throws Exception;
+    int add(int id) throws Exception;
     boolean delete(int index);
     boolean setAmount(int index, int newAmount);
     Order getOrder();

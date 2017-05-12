@@ -20,10 +20,10 @@ public class OracleDAOFactory extends DAOFactory {
 
     protected static Connection createConnection() throws DBConnectionException {
         try {
-            String driver = ""; //TODO: get from properties
-            String url = ""; //TODO: get from properties
-            String user = "User";
-            String password = "0660669819";
+            String driver = "oracle.jdbc.driver.OracleDriver"; //TODO: get from properties
+            String url = "jdbc:oracle:thin:@//localhost:1521/XE"; //TODO: get from properties
+            String user = "xe_nikolay";
+            String password = "12345";
 
             Class.forName(driver); // альтернатива Driver driver = new OracleDriver();
 
