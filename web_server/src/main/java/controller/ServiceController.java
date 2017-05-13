@@ -4,10 +4,15 @@ import com.thoughtworks.paranamer.AnnotationParanamer;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
+import controller.exceptions.WebServerException;
 import model.implementetion.services.Busket;
 import model.implementetion.services.ProductManager;
+
+import javax.management.ServiceNotFoundException;
+import javax.xml.ws.WebServiceException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.rmi.ServerException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -23,18 +28,24 @@ public class ServiceController {
     }
 
     public ServiceController(String httpRequestServiceName,
-                             Map<String, String> httpRequestServiceParam) {
+                             Map<String, String> httpRequestServiceParam)
+            throws ServiceNotFoundException, WebServiceException, WebServerException {
 
         createResponseCollection(httpRequestServiceName, httpRequestServiceParam);
 
     }
 
     private void createResponseCollection(String httpRequestServiceName,
-                                          Map<String, String> httpRequestServiceParam) {
+                                          Map<String, String>
+                                                  httpRequestServiceParam) throws ServiceNotFoundException, WebServerException {
 
         Object result = null;
         try {
             Object service = Container.getInstance().getBean(httpRequestServiceName);
+            if (service == null) {
+                throw new NullPointerException();
+            }
+
 
             //test configuration
             /*Busket busket = new Busket();
@@ -69,10 +80,16 @@ public class ServiceController {
                     break;
                 }
             }
-
+            if (result == null) {
+                throw new NullPointerException();
+            }
             serviceResponse = result;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            throw new ServiceNotFoundException();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new WebServerException(e);
         }
         /*
         //TEMP realization
@@ -84,7 +101,7 @@ public class ServiceController {
                 tempResponseCollection.add(element.getKey() + "=" + element.getValue());
             }
         }
-        collection = tempResponseCollection;*/
+        serviceResponse = tempResponseCollection;*/
     }
 
     protected Object castToType(String s) {

@@ -15,12 +15,12 @@ public class HttpServerResponseTest {
 
     @Test
     public void convertCollectionToHtml() throws Exception {
-        String result = "<ol>" +
+        String result = "<html><body><ol>" +
                 "<li>null</li>" +
                 "<li>green</li>" +
                 "<li>200</li>" +
                 "<li>null</li>" +
-                "</ol>";
+                "</ol></body></html>";
         List<String> serviceParam = new ArrayList<>();
         serviceParam.add(null);
         serviceParam.add("green");
