@@ -41,17 +41,22 @@ public class HttpServerResponse {
 
     }
 
-    public static String convertCollectionToHtml(Collection collection) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<ol>");
-        for (Object element : collection) {
-            if (element == null) {
-                builder.append("<li>null</li>");
-            } else
-                builder.append("<li>").append(element.toString()).append("</li>");
-        }
-        builder.append("</ol>");
-        return builder.toString();
+    public static String convertCollectionToHtml(Object responseObj) {
+        if (responseObj instanceof Collection){
+            Collection collection = (Collection) responseObj;
+            StringBuilder builder = new StringBuilder();
+            builder.append("<ol>");
+            for (Object element : collection) {
+                if (element == null) {
+                    builder.append("<li>null</li>");
+                } else
+                    builder.append("<li>").append(element.toString()).append("</li>");
+            }
+            builder.append("</ol>");
+            return builder.toString();
+        }else
+            return responseObj.toString();
+
     }
 
 }
