@@ -6,7 +6,7 @@ import model.implementetion.services.util.ProductAndAmount;
 import java.util.Collection;
 
 public class Order {
-    private Collection <ProductAndAmount> productsAndAmounts;
+    private Collection<ProductAndAmount> productsAndAmounts;
     private Customer customer;
     private int summ;
 
@@ -40,7 +40,7 @@ public class Order {
         return summ;
     }
 
-    private int calculateSumm(){
+    private int calculateSumm() {
         int summ = 0;
 
         for (ProductAndAmount productAndAmount : productsAndAmounts) {
@@ -48,5 +48,18 @@ public class Order {
         }
 
         return summ;
+    }
+
+    @Override
+    public String toString() {
+        String toString = "Order: \n" + "\t productsAndAmounts: \n";
+
+        for (ProductAndAmount productAndAmount : productsAndAmounts) {
+            toString += "\t \t" + productAndAmount.toString() + "\n";
+        }
+
+        toString += "\t customer = " + customer.toString() + "\n \t summ = " + summ;
+
+        return toString;
     }
 }

@@ -22,6 +22,16 @@ public class Product {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "Product: " +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", volume=" + volume +
+                ", weight=" + weight +
+                ", price=" + price;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

@@ -5,6 +5,12 @@ import model.pojo.Product;
 
 public class ProductAndAmount {
     private Product product;
+
+    @Override
+    public String toString() {
+        return "ProductAndAmount: " + product.toString() + "; Amount = " + amount + ".";
+    }
+
     private int amount;
 
     public ProductAndAmount(Product product) {
