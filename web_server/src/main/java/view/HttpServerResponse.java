@@ -28,7 +28,7 @@ public class HttpServerResponse {
         try {
             serviceController = new ServiceController(
                     httpRequestServiceName, httpRequestServiceParam);
-            content = convertCollectionToHtml(serviceController.getCollection());
+            content = convertObjectToHtml(serviceController.getCollection());
             createResponse(content, 200);
         } catch (ServiceNotFoundException e) {
             createResponse(serviceNotFound, 404);
@@ -43,7 +43,7 @@ public class HttpServerResponse {
 
     }
 
-    protected String createHeadOfResponse(int contentLength, int code) {
+    protected static String createHeadOfResponse(int contentLength, int code) {
         String codeString = "";
         switch (code) {
             case 200:
@@ -65,7 +65,7 @@ public class HttpServerResponse {
         return responseHead;
     }
 
-    public static String convertCollectionToHtml(Object responseObj) {
+    public static String convertObjectToHtml(Object responseObj) {
         if (responseObj instanceof Collection) {
             Collection collection = (Collection) responseObj;
             StringBuilder builder = new StringBuilder();
