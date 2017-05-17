@@ -3,10 +3,13 @@ package controller;
 
 import controller.exceptions.WebServerException;
 import controller.servicesControllers.BusketController;
+import controller.servicesControllers.ProductManagerController;
 import model.implementetion.services.Authorization;
+import model.implementetion.services.Busket;
 import model.interfaces.services.IAuthorization;
 import model.interfaces.services.IBusket;
 import model.interfaces.services.ICustomerManager;
+import model.pojo.Product;
 
 import javax.management.ServiceNotFoundException;
 import java.util.Map;
@@ -48,14 +51,14 @@ public class ServiceController {
                    result = new BusketController().runService(service,method,httpRequestServiceParam);
                     break;
                 case ("Authorization"):
-                    IAuthorization authorization = (IAuthorization) service;
                     break;
                 case ("CustomManager"):
-                    ICustomerManager customerManager = (ICustomerManager) service;
                     break;
                 case ("OrderManager"):
                     break;
                 case ("ProductManager"):
+                    result = new ProductManagerController().runService
+                            (service,method,httpRequestServiceParam);
                     break;
                 case ("Recomandations"):
                     break;

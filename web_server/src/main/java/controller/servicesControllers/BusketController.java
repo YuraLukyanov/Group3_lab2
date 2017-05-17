@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by Nikolion on 17.05.2017.
  */
-public class BusketController {
+public class BusketController implements StartService {
 
     public Object runService(Object service, String method, Map<String,String>
             httpRequestServiceParam) throws Exception {
@@ -29,6 +29,9 @@ public class BusketController {
                 break;
             case ("getProductsAndAmounts"):
                 result= busket.getProductsAndAmounts();
+                break;
+            case ("getOrder"):
+                result= busket.getOrder();
                 break;
         }
         return result;
