@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beans>
-    <bean name="addProduct" class="ua.edu.group3.laba2.model.services.AddProduct">
-        <property name="" value=""/>
+    <bean id="authorization" class="model.implementetion.services.Authorization"/>
+
+    <bean id="productManager" class="model.implementetion.services.ProductManager"/>
+
+    <bean id="busket" class="model.implementetion.services.Busket">
+        <property name="authorization" ref ="authorization"/>
+        <property name="productManager" ref ="productManager"/>
     </bean>
 
-    <bean name="" class=""/>
+    <bean id="customerManager" class="model.implementetion.services.CustomerManager"/>
 
-    <bean name="" class="">
-        <property name="" ref=""/>
-    </bean>
+    <bean id="orderManager" class="model.implementetion.services.OrderManager"/>
 
-    <bean name="" class="">
-        <property name="" value=""/>
-        <property name="" ref=""/>
+    <bean id="recomandations" class="model.implementetion.services.Recomandations">
+        <property name="authorization" ref ="authorization"/>
+        <property name="productManager" ref ="productManager"/>
     </bean>
 
 </beans>

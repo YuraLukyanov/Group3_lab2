@@ -2,20 +2,9 @@ package controller;
 
 
 import controller.exceptions.WebServerException;
-import controller.servicesControllers.AuthorizationController;
-import controller.servicesControllers.BusketController;
-import controller.servicesControllers.CustomerManagerController;
-import controller.servicesControllers.ProductManagerController;
-import model.implementetion.services.Authorization;
-import model.implementetion.services.Busket;
-import model.interfaces.services.IAuthorization;
-import model.interfaces.services.IBusket;
-import model.interfaces.services.ICustomerManager;
-import model.pojo.Product;
-
+import controller.servicesControllers.*;
 import javax.management.ServiceNotFoundException;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * Created by Nikolion on 11.04.2017.
@@ -61,6 +50,8 @@ public class ServiceController {
                             (service,method,httpRequestServiceParam);
                     break;
                 case ("OrderManager"):
+                    result = new OrderManagerController().runService(service,
+                            method,httpRequestServiceParam);
                     break;
                 case ("ProductManager"):
                     result = new ProductManagerController().runService
@@ -93,15 +84,6 @@ public class ServiceController {
             }
         }
         serviceResponse = tempResponseCollection;*/
-    }
-
-    static Object castToType(String s) {
-        Scanner sc = new Scanner(s);
-        return
-                sc.hasNextInt() ? sc.nextInt() :
-                        sc.hasNextDouble() ? sc.nextDouble() :
-                                sc.hasNext() ? sc.next() :
-                                        s;
     }
 
 }
