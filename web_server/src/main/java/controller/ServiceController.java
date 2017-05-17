@@ -2,7 +2,9 @@ package controller;
 
 
 import controller.exceptions.WebServerException;
+import controller.servicesControllers.AuthorizationController;
 import controller.servicesControllers.BusketController;
+import controller.servicesControllers.CustomerManagerController;
 import controller.servicesControllers.ProductManagerController;
 import model.implementetion.services.Authorization;
 import model.implementetion.services.Busket;
@@ -51,8 +53,12 @@ public class ServiceController {
                    result = new BusketController().runService(service,method,httpRequestServiceParam);
                     break;
                 case ("Authorization"):
+                    result = new AuthorizationController().runService
+                            (service,method,httpRequestServiceParam);
                     break;
                 case ("CustomManager"):
+                    result = new CustomerManagerController().runService
+                            (service,method,httpRequestServiceParam);
                     break;
                 case ("OrderManager"):
                     break;
