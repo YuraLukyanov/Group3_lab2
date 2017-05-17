@@ -78,7 +78,7 @@ public class ProductManagerController implements StartService {
                         ("name"));
                 break;
             case ("getByColor"):
-                result = productManager.getByName(httpRequestServiceParam.get
+                result = productManager.getByColor(httpRequestServiceParam.get
                         ("color"));
                 break;
             case ("getByVolume"):

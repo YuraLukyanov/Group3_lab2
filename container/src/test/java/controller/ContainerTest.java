@@ -1,5 +1,6 @@
 package controller;
 
+import controller.test_services.Basket;
 import controller.test_services.Product;
 import controller.test_services.TestAddProduct;
 import org.junit.Before;
@@ -24,7 +25,7 @@ public class ContainerTest {
     @Before
     public void initContainer() throws Exception {
         String path = getClass().getClassLoader().getResource("test_beans.xml").getPath();
-        assertFalse("Container init from bad file",Container.getInstance().init(path+"lala"));
+        assertFalse("Container init from bad file",Container.getInstance().init(path+".xml"));
         assertTrue("Container not init", Container.getInstance().init(path));
 
     }
@@ -34,15 +35,21 @@ public class ContainerTest {
         TestAddProduct addProduct = new TestAddProduct();
         Product product = new Product();
         addProduct.setProduct(product);
-        Object testAddProduct = Container.getInstance().getBean("testAddProduct");
+        Object testAddProductFromContainer = Container.getInstance().getBean("testAddProduct");
 
         Product realProduct = new Product();
         realProduct.setId(555);
         realProduct.setType("computer");
-        Object testProduct = Container.getInstance().getBean("someProduct1");
+        Object productFromContainer = Container.getInstance().getBean("someProduct1");
 
-        assertEquals("Products are not equal",realProduct,testProduct);
-        assertEquals("AddProducts are not equal",addProduct,testAddProduct);
+        Basket basket = new Basket();
+        basket.setAddProduct(addProduct);
+        basket.setPosition(2);
+        Object basketFromContainer = Container.getInstance().getBean("basket");
+
+        assertEquals("Products are not equal",realProduct,productFromContainer);
+        assertEquals("AddProducts are not equal",addProduct,testAddProductFromContainer);
+        assertEquals("Baskets are not equal",basket, basketFromContainer);
     }
 
     @Test
@@ -56,8 +63,7 @@ public class ContainerTest {
 
     @Test
     public void getBeanByClass() throws Exception {
-        Collection collectionFromContainer = Container.getInstance().getBean(Product
-                .class);
+        Collection collectionFromContainer = Container.getInstance().getBean(Product.class);
         assertTrue("The quantity does not match",
                 collectionFromContainer instanceof Collection
                 && collectionFromContainer.size()==2);
