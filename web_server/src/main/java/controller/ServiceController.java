@@ -1,18 +1,14 @@
 package controller;
 
-import com.thoughtworks.paranamer.AnnotationParanamer;
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+
 import controller.exceptions.WebServerException;
-import model.implementetion.services.Busket;
-import model.implementetion.services.ProductManager;
+import controller.servicesControllers.BusketController;
+import model.implementetion.services.Authorization;
+import model.interfaces.services.IAuthorization;
+import model.interfaces.services.IBusket;
+import model.interfaces.services.ICustomerManager;
 
 import javax.management.ServiceNotFoundException;
-import javax.xml.ws.WebServiceException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.rmi.ServerException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -29,7 +25,7 @@ public class ServiceController {
 
     public ServiceController(String httpRequestServiceName,
                              Map<String, String> httpRequestServiceParam)
-            throws ServiceNotFoundException, WebServiceException, WebServerException {
+            throws ServiceNotFoundException, WebServerException {
 
         createResponseCollection(httpRequestServiceName, httpRequestServiceParam);
 
@@ -41,45 +37,31 @@ public class ServiceController {
 
         Object result = null;
         try {
+            String method = httpRequestServiceParam.get("method");
             Object service = Container.getInstance().getBean(httpRequestServiceName);
-            if (service == null) {
+            if (service==null || method == null || method.isEmpty()) {
                 throw new NullPointerException();
             }
-
-
-            //test configuration
-            /*Busket busket = new Busket();
-            ProductManager productManager = new ProductManager();
-            busket.setProductManager(productManager);
-            Object service = busket;*/
-
-            Method[] methods = service.getClass().getMethods();
-            String methodName = httpRequestServiceParam.get("method");
-            for (Method m : methods) {
-                Object[] args;
-                if (m.getName().equalsIgnoreCase(methodName)) {
-                    Parameter[] p = m.getParameters();
-                    args = new Object[p.length];
-                    String name = "";
-
-                    Paranamer info = new CachingParanamer(new AnnotationParanamer(new BytecodeReadingParanamer()));
-                    String[] parameterNames = info.lookupParameterNames(m);
-                    for (int i = 0; i < parameterNames.length; i++) {
-                        name = parameterNames[i];
-                        Object o = httpRequestServiceParam.get(name);
-                        args[i] = castToType(o.toString());
-                    }
-                    //get argument name with compilation argument: -parameters
-                   /* for (int i = 0; i < p.length; i++) {
-                        name = p[i].getName();
-                        Object o = httpRequestServiceParam.get(name);
-                        args[i] = castToType(o.toString());
-                    }*/
-
-                    result = m.invoke(service, args);
+            String serviceClassName = service.getClass().getSimpleName();
+            switch (serviceClassName){
+                case ("Basket"):
+                   result = new BusketController().runService(service,method,httpRequestServiceParam);
                     break;
-                }
+                case ("Authorization"):
+                    IAuthorization authorization = (IAuthorization) service;
+                    break;
+                case ("CustomManager"):
+                    ICustomerManager customerManager = (ICustomerManager) service;
+                    break;
+                case ("OrderManager"):
+                    break;
+                case ("ProductManager"):
+                    break;
+                case ("Recomandations"):
+                    break;
             }
+
+
             if (result == null) {
                 throw new NullPointerException();
             }
@@ -104,7 +86,7 @@ public class ServiceController {
         serviceResponse = tempResponseCollection;*/
     }
 
-    protected Object castToType(String s) {
+    static Object castToType(String s) {
         Scanner sc = new Scanner(s);
         return
                 sc.hasNextInt() ? sc.nextInt() :
