@@ -11,6 +11,7 @@
         <!ATTLIST property valuen CDATA>
                 ]>
 -->
+<!--old beans-->
 <beans>
     <bean id="someProduct" class="controller.test_services.Product"/>
    <bean id="basket" class="controller.test_services.Basket">
@@ -26,8 +27,8 @@
         <property name="id" value="555"/>
         <property name="type" value="computer"/>
     </bean>
-
-
+    <!--_____________________________________________-->
+    <bean id="ProductManager" class="controller.test_services.ProductManager"/>
 
 
 </beans>

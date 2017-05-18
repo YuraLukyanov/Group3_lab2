@@ -90,7 +90,7 @@ public class ProductManagerController implements StartService {
                         .castToType(httpRequestServiceParam.get("weight")));
                 break;
             case ("getByPrice"):
-                result = productManager.getByWeight((int)UtilClass
+                result = productManager.getByPrice((int)UtilClass
                         .castToType(httpRequestServiceParam.get("price")));
                 break;
             case ("getAll"):
