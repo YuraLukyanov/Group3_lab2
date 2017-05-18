@@ -21,13 +21,16 @@ public class HttpRequest {
 
     private String serviceName;
     private Map<String,String> serviceParam = new HashMap<>();
-
+    /**
+     * Method parse type of request
+     *
+     * @param request string with request from user browser
+     */
     protected void parseStringRequestToValues(String request) {
         try {
             String[] requestRows = request.split(System.getProperty("line.separator"));
             String requestType = requestRows[0].split(" ")[0];
             if (requestType.equals("GET")) {
-                //System.out.println(requestRows[0]);
                 parseGet(requestRows[0]);
             } else {
                 throw new UnsupportedOperationException("No available this request");
@@ -36,7 +39,11 @@ public class HttpRequest {
 
         }
     }
-
+    /**
+     * Method parse row with GET request
+     *
+     * @param requestRow first row of GET request
+     */
     private void parseGet(String requestRow) {
        try {
             String requestString = requestRow.split("GET /")[1].split(" HTTP/")[0];

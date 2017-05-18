@@ -3,6 +3,7 @@ package controller;
 
 import controller.exceptions.WebServerException;
 import controller.servicesControllers.*;
+
 import javax.management.ServiceNotFoundException;
 import java.util.Map;
 
@@ -25,37 +26,43 @@ public class ServiceController {
 
     }
 
-    private void createResponseCollection(String httpRequestServiceName,
-                                          Map<String, String>
-                                                  httpRequestServiceParam) throws ServiceNotFoundException, WebServerException {
+    /**
+     * Method launches the appropriate service by name
+     *
+     * @param httpRequestServiceName  name of service
+     * @param httpRequestServiceParam map with params of service
+     */
+    protected void createResponseCollection(String httpRequestServiceName,
+                                            Map<String, String>
+                                                    httpRequestServiceParam) throws ServiceNotFoundException, WebServerException {
 
         Object result = null;
         try {
             String method = httpRequestServiceParam.get("method");
             Object service = Container.getInstance().getBean(httpRequestServiceName);
-            if (service==null || method == null || method.isEmpty()) {
+            if (service == null || method == null || method.isEmpty()) {
                 throw new NullPointerException();
             }
             String serviceClassName = service.getClass().getSimpleName();
-            switch (serviceClassName){
+            switch (serviceClassName) {
                 case ("Basket"):
-                   result = new BusketController().runService(service,method,httpRequestServiceParam);
+                    result = new BusketController().runService(service, method, httpRequestServiceParam);
                     break;
                 case ("Authorization"):
                     result = new AuthorizationController().runService
-                            (service,method,httpRequestServiceParam);
+                            (service, method, httpRequestServiceParam);
                     break;
                 case ("CustomManager"):
                     result = new CustomerManagerController().runService
-                            (service,method,httpRequestServiceParam);
+                            (service, method, httpRequestServiceParam);
                     break;
                 case ("OrderManager"):
                     result = new OrderManagerController().runService(service,
-                            method,httpRequestServiceParam);
+                            method, httpRequestServiceParam);
                     break;
                 case ("ProductManager"):
                     result = new ProductManagerController().runService
-                            (service,method,httpRequestServiceParam);
+                            (service, method, httpRequestServiceParam);
                     break;
                 case ("Recomandations"):
                     break;

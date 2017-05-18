@@ -92,8 +92,15 @@ public class DOMXMLBeansParser implements XMLBeansParser {
         }
     }
 
+    /**
+     * Method recursively creates beans and adds them to the output map
+     * for the container
+     *
+     * @param key              id of bean
+     * @param mapWithTempBeans map with objects of class Bean
+     */
     protected void tryCreateBean(String key, Map<String, Bean>
-            mapWithTempBeans)  throws ClassNotFoundException,
+            mapWithTempBeans) throws ClassNotFoundException,
             IllegalAccessException, InstantiationException,
             InvocationTargetException, IllegalArgumentException {
         Bean bean = mapWithTempBeans.get(key);
@@ -122,17 +129,23 @@ public class DOMXMLBeansParser implements XMLBeansParser {
                 }
                 ref = beans.get(entryRefProperty.getValue());
             }
-                for (Method m : methods) {
-                    if (m.getName().equalsIgnoreCase("set" + entryRefProperty.getKey())) {
-                        Object[] args = new Object[]{ref};
-                        m.invoke(beanObj, args);
-                        break;
-                    }
+            for (Method m : methods) {
+                if (m.getName().equalsIgnoreCase("set" + entryRefProperty.getKey())) {
+                    Object[] args = new Object[]{ref};
+                    m.invoke(beanObj, args);
+                    break;
                 }
+            }
         }
         beans.put(key, beanObj);
     }
-
+    /**
+     * Method of parsing the parameters of the bean and adding them to the current bean
+     *
+     * @param bean              bean without properties
+     * @param propertyNodeListOfBean NodeList with all properties of bean
+     *                               @return bean with properties
+     */
     protected Bean parseProperty(Bean bean, NodeList propertyNodeListOfBean) {
         for (int i = 0; i < propertyNodeListOfBean.getLength(); i++) {
             Element property = (Element) propertyNodeListOfBean.item(i);
@@ -157,6 +170,9 @@ public class DOMXMLBeansParser implements XMLBeansParser {
                                                 s;
     }
 
+    /**
+     * Class for storing data about bean
+     */
     private class Bean {
 
         Bean(String id, String className) throws NullPointerException {
