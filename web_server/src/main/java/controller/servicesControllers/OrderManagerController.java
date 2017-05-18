@@ -1,7 +1,6 @@
 package controller.servicesControllers;
 
 import model.interfaces.services.IOrderManager;
-import model.pojo.Order;
 import util.UtilClass;
 
 import java.util.Map;
@@ -14,7 +13,6 @@ public class OrderManagerController implements StartService {
     public Object runService(Object service, String method, Map<String, String> httpRequestServiceParam) throws Exception {
         IOrderManager orderManager = (IOrderManager) service;
         Object result = null;
-        Order order;
         switch (method) {
             case ("get"):
                 result = orderManager.get((int) UtilClass.castToType
@@ -27,11 +25,8 @@ public class OrderManagerController implements StartService {
                 result = orderManager.delete((int) UtilClass.castToType
                         (httpRequestServiceParam.get("id")));
                 break;
-            case ("update"):
-                //// TODO: 17.05.2017
-                break;
             case ("add"):
-                //// TODO: 17.05.2017
+                result = orderManager.add();
                 break;
         }
         return result;
