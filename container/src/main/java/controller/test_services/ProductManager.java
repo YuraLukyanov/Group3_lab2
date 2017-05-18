@@ -69,12 +69,12 @@ public class ProductManager implements IProductManager {
     }
 
     @Override
-    public boolean update(int id, Product newProduct) throws Exception {
+    public boolean update(int id, String name, String color, int weight, int volume, int price) throws Exception {
         return false;
     }
 
     @Override
-    public int add(Product product) throws Exception {
+    public int add(String name, String color, int weight, int volume, int price) throws Exception {
         return 0;
     }
 

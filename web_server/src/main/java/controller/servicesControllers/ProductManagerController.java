@@ -1,10 +1,7 @@
 package controller.servicesControllers;
 
-import model.interfaces.services.IBusket;
 import model.interfaces.services.IProductManager;
-import model.pojo.Product;
 import util.UtilClass;
-
 import java.util.Map;
 
 /**
@@ -16,62 +13,66 @@ public class ProductManagerController implements StartService {
     public Object runService(Object service, String method, Map<String, String> httpRequestServiceParam) throws Exception {
         IProductManager productManager = (IProductManager) service;
         Object result = null;
-        Product product;
+        String name;
+        String color;
+        int weight;
+        int volume;
+        int price;
         switch (method) {
             case ("delete"):
                 result = productManager.delete((int) UtilClass.castToType
                         (httpRequestServiceParam.get("id")));
                 break;
             case ("add"):
-                product = new Product();
-                product.setName(httpRequestServiceParam.get("name"));
-                product.setColor(httpRequestServiceParam.get("color"));
+                name = httpRequestServiceParam.get("name");
+                color = httpRequestServiceParam.get("color");
                 try {
-                    product.setPrice((int) UtilClass.castToType
-                            (httpRequestServiceParam.get("price")));
+                    price = (int) UtilClass.castToType
+                            (httpRequestServiceParam.get("price"));
                 } catch (Exception e) {
-                    product.setPrice(0);
+                   price = 0;
                 }
                 try {
-                    product.setVolume((int) UtilClass.castToType
-                            (httpRequestServiceParam.get("volume")));
+                    volume = (int) UtilClass.castToType
+                            (httpRequestServiceParam.get("volume"));
                 } catch (Exception e) {
-                    product.setVolume(0);
+                    volume = 0;
                 }
                 try {
-                    product.setWeight((int) UtilClass.castToType
-                            (httpRequestServiceParam.get("weight")));
+                    weight = (int) UtilClass.castToType
+                            (httpRequestServiceParam.get("weight"));
                 } catch (Exception e) {
-                    product.setWeight(0);
+                    weight = 0;
                 }
 
-                result = productManager.add(product);
+                result = productManager.add(name,color,weight,volume,price);
                 break;
             case ("update"):
-                product = new Product();
-                product.setName(httpRequestServiceParam.get("name"));
-                product.setColor(httpRequestServiceParam.get("color"));
+                name = httpRequestServiceParam.get("name");
+                color = httpRequestServiceParam.get("color");
                 try {
-                    product.setPrice((int) UtilClass.castToType
-                            (httpRequestServiceParam.get("price")));
+                    price = (int) UtilClass.castToType
+                            (httpRequestServiceParam.get("price"));
                 } catch (Exception e) {
-                    product.setPrice(0);
+                    price = 0;
                 }
                 try {
-                    product.setVolume((int) UtilClass.castToType
-                            (httpRequestServiceParam.get("volume")));
+                    volume = (int) UtilClass.castToType
+                            (httpRequestServiceParam.get("volume"));
                 } catch (Exception e) {
-                    product.setVolume(0);
+                    volume = 0;
                 }
                 try {
-                    product.setWeight((int) UtilClass.castToType
-                            (httpRequestServiceParam.get("weight")));
+                    weight = (int) UtilClass.castToType
+                            (httpRequestServiceParam.get("weight"));
                 } catch (Exception e) {
-                    product.setWeight(0);
+                    weight = 0;
                 }
 
+
                 result = productManager.update((int) UtilClass.castToType
-                        (httpRequestServiceParam.get("id")),product);
+                        (httpRequestServiceParam.get("id")),name,color,
+                        weight,volume,price);
                 break;
             case ("getByName"):
                 result = productManager.getByName(httpRequestServiceParam.get
