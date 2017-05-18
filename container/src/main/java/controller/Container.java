@@ -19,11 +19,17 @@ public class Container {
     private String pathToFile;
     protected Map<String, Object> beans = Maps.newHashMap();
 
-    //синхронизация?
+
     public static Container getInstance() {
         return container;
     }
 
+    /**
+     * Method for init container from xml file
+     *
+     * @param pathToFile xml file with beans
+     * @return true if the file is successfully parsed
+     */
     public boolean init(String pathToFile) {
         File fileWithXML = new File(pathToFile);
         if (fileWithXML.exists()) {

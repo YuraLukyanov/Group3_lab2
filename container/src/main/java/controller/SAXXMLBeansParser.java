@@ -4,8 +4,6 @@ import com.google.common.collect.Maps;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -13,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -98,7 +95,13 @@ public class SAXXMLBeansParser implements XMLBeansParser {
             } else continue;
         }
     }
-
+    /**
+     * Method recursively creates beans and adds them to the output map
+     * for the container
+     *
+     * @param key              id of bean
+     * @param mapWithTempBeans map with objects of class Bean
+     */
     protected void tryCreateBean(String key, Map<String, Bean>
             mapWithTempBeans)  throws ClassNotFoundException,
             IllegalAccessException, InstantiationException,
@@ -149,7 +152,9 @@ public class SAXXMLBeansParser implements XMLBeansParser {
                                         sc.hasNext() ? sc.next() :
                                                 s;
     }
-
+    /**
+     * Class for storing data about bean
+     */
     private class Bean {
         String id;
         String className;
