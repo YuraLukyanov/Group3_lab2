@@ -24,13 +24,15 @@ public class CustomerManager implements ICustomerManager{
         return getByFilter(null);
     }
 
-    public boolean update(int id, Customer newCustomer) {
+    public boolean update(int id, String name, String login, String password) {
+        Customer newCustomer = new Customer(name, login, password);
         DAOFactory factory = DAOFactory.getDAOFactory();
         CustomerDAO customerDAO = factory.getCustomerDAO();
         return customerDAO.update(id, newCustomer);
     }
 
-    public int add(Customer customer) {
+    public int add(String name, String login, String password) {
+        Customer customer = new Customer(name, login, password);
         DAOFactory factory = DAOFactory.getDAOFactory();
         CustomerDAO customerDAO = factory.getCustomerDAO();
         return customerDAO.insert(customer);
@@ -42,7 +44,7 @@ public class CustomerManager implements ICustomerManager{
         return customerDAO.delete(id);
     }
 
-    public Collection<Customer> getByFilter(Customer filter) {
+    private Collection<Customer> getByFilter(Customer filter) {
         DAOFactory factory = DAOFactory.getDAOFactory();
         CustomerDAO customerDAO = factory.getCustomerDAO();
         return customerDAO.selectTO(filter);

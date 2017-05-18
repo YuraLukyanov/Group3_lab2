@@ -48,13 +48,15 @@ public class ProductManager implements IProductManager {
         return getByFilter(null);
     }
 
-    public boolean update(int id, Product newProduct) throws Exception {
+    public boolean update(int id, String name, String color, int weight, int volume, int price) throws Exception {
+        Product newProduct = new Product(name, color, weight, volume, price);
         DAOFactory factory = DAOFactory.getDAOFactory();
         ProductDAO productDAO = factory.getProductDAO();
         return productDAO.update(id, newProduct);
     }
 
-    public int add(Product product) throws Exception {
+    public int add(String name, String color, int weight, int volume, int price) throws Exception {
+        Product product = new Product(name, color, weight, volume, price);
         DAOFactory factory = DAOFactory.getDAOFactory();
         ProductDAO productDAO = factory.getProductDAO();
         return productDAO.insert(product);

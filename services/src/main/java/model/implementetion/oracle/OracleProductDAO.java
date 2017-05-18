@@ -1,15 +1,13 @@
 package model.implementetion.oracle;
 
 import model.implementetion.oracle.exceptions.DBConnectionException;
+import model.implementetion.oracle.exceptions.WrongIDException;
 import model.interfaces.dao.ProductDAO;
 import model.pojo.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -35,9 +33,6 @@ public class OracleProductDAO implements ProductDAO {
         } catch (DBConnectionException dbexception) {
             LOGGER.error(dbexception.toString());
             throw new Exception(dbexception);
-        } catch (SQLException sqlexception) {
-            LOGGER.error(sqlexception.toString());
-            throw new Exception(sqlexception);
         } finally {
             OracleDAOFactory.closeConnection();
         }
@@ -46,21 +41,17 @@ public class OracleProductDAO implements ProductDAO {
     }
 
     public boolean delete(int id) throws Exception {
+        find(id);  //checking - does element with this id exist in DB
+
         try {
             Connection connection = OracleDAOFactory.createConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM Product WHERE id = ?");
-            preparedStatement.setInt(1, id);
+                    "DELETE FROM Product WHERE id = " + id);
             preparedStatement.execute();
-
-            //TODO: indexOfAddedElement = ...
 
         } catch (DBConnectionException dbexception) {
             LOGGER.error(dbexception.toString());
             throw new Exception(dbexception);
-        } catch (SQLException sqlexception) {
-            LOGGER.error(sqlexception.toString());
-            throw new Exception(sqlexception);
         } finally {
             OracleDAOFactory.closeConnection();
         }
@@ -72,11 +63,13 @@ public class OracleProductDAO implements ProductDAO {
         Product product = new Product();
 
         try {
+            String query = "SELECT name, color, weight, volume, price FROM Product WHERE id = " + id;
             Connection connection = OracleDAOFactory.createConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT Product.name, Product.color, Product.weight, Product.volume, Product.price" +
-                            "FROM Product WHERE id = ?");
-            ResultSet resultSet = preparedStatement.executeQuery();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            if (!resultSet.next())
+                throw new WrongIDException();
 
             product.setName(resultSet.getString("name"));
             product.setColor(resultSet.getString("color"));
@@ -86,9 +79,6 @@ public class OracleProductDAO implements ProductDAO {
         } catch (DBConnectionException dbexception) {
             LOGGER.error(dbexception.toString());
             throw new Exception(dbexception);
-        } catch (SQLException sqlexception) {
-            LOGGER.error(sqlexception.toString());
-            throw new Exception(sqlexception);
         } finally {
             OracleDAOFactory.closeConnection();
         }
@@ -97,10 +87,12 @@ public class OracleProductDAO implements ProductDAO {
     }
 
     public boolean update(int id, Product newProduct) throws Exception {
+        find(id);   //checking - does element with this id exist in DB
+
         try {
             Connection connection = OracleDAOFactory.createConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "UPDATE Product SET NAME = ?, color = ?, weight = ?, volume = ?, price = ? WHERE id = ?");
+                    "UPDATE Product SET NAME = ?, color = ?, weight = ?, volume = ?, price = ? WHERE id = " + id);
             preparedStatement.setString(1, newProduct.getName());
             preparedStatement.setString(2, newProduct.getColor());
             preparedStatement.setString(3, newProduct.getWeight() + "");
@@ -111,9 +103,6 @@ public class OracleProductDAO implements ProductDAO {
         } catch (DBConnectionException dbexception) {
             LOGGER.error(dbexception.toString());
             throw new Exception(dbexception);
-        } catch (SQLException sqlexception) {
-            LOGGER.error(sqlexception.toString());
-            throw new Exception(sqlexception);
         } finally {
             OracleDAOFactory.closeConnection();
         }
@@ -128,7 +117,7 @@ public class OracleProductDAO implements ProductDAO {
             Connection connection = OracleDAOFactory.createConnection();
 
             String statement = "SELECT Product.name, Product.color, Product.weight, " +
-                    "Product.volume, Product.price FROM Product ";
+                    "Product.volume, Product.price FROM Product";
 
             if (filter != null) {
                 statement += "WHERE ";
@@ -153,7 +142,7 @@ public class OracleProductDAO implements ProductDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Product product = new Product();
                 product.setName(resultSet.getString("name"));
                 product.setColor(resultSet.getString("color"));
@@ -174,5 +163,4 @@ public class OracleProductDAO implements ProductDAO {
 
         return products;
     }
-
 }

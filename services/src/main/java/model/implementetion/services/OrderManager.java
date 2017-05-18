@@ -2,12 +2,15 @@ package model.implementetion.services;
 
 import model.DAOFactory;
 import model.interfaces.dao.OrderDAO;
+import model.interfaces.services.IBusket;
 import model.interfaces.services.IOrderManager;
 import model.pojo.Order;
 
 import java.util.Collection;
 
 public class OrderManager implements IOrderManager{
+    IBusket busket;
+
     public Order get(int id) {
         DAOFactory factory = DAOFactory.getDAOFactory();
         OrderDAO orderDAO = factory.getOrderDAO();
@@ -20,13 +23,8 @@ public class OrderManager implements IOrderManager{
         return orderDAO.selectTO(null);
     }
 
-    public boolean update(int id, Order newOrder) {
-        DAOFactory factory = DAOFactory.getDAOFactory();
-        OrderDAO orderDAO = factory.getOrderDAO();
-        return orderDAO.update(id, newOrder);
-    }
-
-    public int add(Order order) {
+    public int add() {
+        Order order = busket.getOrder();
         DAOFactory factory = DAOFactory.getDAOFactory();
         OrderDAO orderDAO = factory.getOrderDAO();
         return orderDAO.insert(order);

@@ -12,7 +12,7 @@ public interface IProductManager {
     Collection<Product> getByWeight(int weight) throws Exception;
     Collection<Product> getByPrice(int price) throws Exception;
     Collection<Product> getAll() throws Exception;
-    boolean update(int id, Product newProduct) throws Exception;
-    int add(Product product) throws Exception;
+    boolean update(int id, String name, String color, int weight, int volume, int price) throws Exception;
+    int add(String name, String color, int weight, int volume, int price) throws Exception;
     boolean delete(int id) throws Exception;
 }
