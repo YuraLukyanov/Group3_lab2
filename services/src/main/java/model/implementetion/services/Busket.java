@@ -15,7 +15,7 @@ import java.util.LinkedHashSet;
 public class Busket implements IBusket {
     private static final Logger LOGGER = LoggerFactory.getLogger(Busket.class);
 
-    private LinkedHashSet<ProductAndAmount> productsAndAmounts = new LinkedHashSet<ProductAndAmount>();
+    private LinkedHashSet<ProductAndAmount> productsAndAmounts = new LinkedHashSet<>();
     private IAuthorization authorization;
     private IProductManager productManager;
 
@@ -50,6 +50,7 @@ public class Busket implements IBusket {
             return false;
         }
 
+        //noinspection ConstantConditions
         getProductAndAmount(index).setAmount(newAmount);
         return true;
     }
@@ -71,6 +72,10 @@ public class Busket implements IBusket {
             i++;
         }
         return null;
+    }
+
+    public void clear(){
+        productsAndAmounts.clear();
     }
 
     public void setProductManager(IProductManager productManager) {

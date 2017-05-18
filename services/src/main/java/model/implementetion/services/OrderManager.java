@@ -9,7 +9,7 @@ import model.pojo.Order;
 import java.util.Collection;
 
 public class OrderManager implements IOrderManager{
-    IBusket busket;
+    private IBusket busket;
 
     public Order get(int id) {
         DAOFactory factory = DAOFactory.getDAOFactory();
@@ -34,5 +34,9 @@ public class OrderManager implements IOrderManager{
         DAOFactory factory = DAOFactory.getDAOFactory();
         OrderDAO orderDAO = factory.getOrderDAO();
         return orderDAO.delete(id);
+    }
+
+    public void setBusket(IBusket busket) {
+        this.busket = busket;
     }
 }

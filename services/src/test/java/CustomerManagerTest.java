@@ -24,6 +24,7 @@ public class CustomerManagerTest {
 
     @Test
     public void addAndGet() {
+
         Customer customer1 = new Customer("User1", "Login1", "1234");
         Customer customer2 = new Customer("User2", "Login2", "2345");
         Customer customer3 = new Customer("User3", "Login3", "3456");
@@ -31,16 +32,16 @@ public class CustomerManagerTest {
         Customer customer5 = new Customer("User", "Login5", "5678");
 
         try {
-            customerManager.add(customer1);
-            customerManager.add(customer2);
-            customerManager.add(customer3);
-            customerManager.add(customer4);
-            customerManager.add(customer5);
+            customerManager.add("User1", "Login1", "1234");
+            customerManager.add("User2", "Login2", "1234");
+            customerManager.add("User3", "Login3", "1234");
+            customerManager.add("User4", "Login4", "1234");
+            customerManager.add("User5", "Login5", "1234");
         } catch (Exception exception) {
             System.out.println("Get an exception \n" + exception.toString());
         }
 
-        Collection<Customer> temp = new ArrayList<Customer>();
+        Collection<Customer> temp = new ArrayList<>();
 
         temp.add(customer1);
         temp.add(customer2);
@@ -63,11 +64,6 @@ public class CustomerManagerTest {
         temp.add(customer5);
         Customer filter = new Customer();
         filter.setName("User");
-        Assert.assertEquals(customerManager.getByFilter(filter), temp);
-
-        temp.clear();
-        temp.add(customer2);
-        Assert.assertEquals(customerManager.getByFilter(customer2), temp);
 
         temp.clear();
         temp.add(customer1);
@@ -80,12 +76,11 @@ public class CustomerManagerTest {
 
     @Test
     public void update() {
-        Customer oldCustomer = new Customer("Old customer", "user1", "1234");
-        Customer newCustomer = new Customer("New customer", "user2", "5678");
+        Customer newCustomer = new Customer();
 
         try {
-            int id = customerManager.add(oldCustomer);
-            customerManager.update(id, newCustomer);
+            int id = customerManager.add("Old customer", "user1", "1234");
+            customerManager.update(id, "New customer", "user2", "5678");
             Assert.assertEquals(customerManager.get(id), newCustomer);
 
         } catch (Exception exception) {
@@ -96,21 +91,20 @@ public class CustomerManagerTest {
     @Test
     public void delete() {
         Customer customer1 = new Customer("User1", "login1", "12345");
-        Customer customer2 = new Customer("User2", "login2", "12346");
-        Customer customer3 = new Customer("User3", "login3", "12347");
+        Customer customer2 = new Customer("User3", "login3", "12347");
 
-        Collection<Customer> temp = new ArrayList<Customer>();
+        Collection<Customer> temp = new ArrayList<>();
 
         try {
-            customerManager.add(customer1);
-            customerManager.add(customer2);
-            customerManager.add(customer3);
+            customerManager.add("User1", "login1", "12345");
+            customerManager.add("User2", "login2", "12345");
+            customerManager.add("User3", "login3", "12345");
         } catch (Exception exception) {
             System.out.println("Get an exception \n" + exception.toString());
         }
 
         temp.add(customer1);
-        temp.add(customer3);
+        temp.add(customer2);
         customerManager.delete(1);
         Assert.assertEquals(customerManager.getAll(), temp);
 

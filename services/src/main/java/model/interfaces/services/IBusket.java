@@ -12,4 +12,5 @@ public interface IBusket {
     boolean setAmount(int index, int newAmount);
     Order getOrder();
     Collection<ProductAndAmount> getProductsAndAmounts();
+    void clear();
 }

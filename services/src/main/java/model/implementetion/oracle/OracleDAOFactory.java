@@ -22,8 +22,8 @@ public class OracleDAOFactory extends DAOFactory {
         try {
             String driver = "oracle.jdbc.driver.OracleDriver"; //TODO: get from properties
             String url = "jdbc:oracle:thin:@//localhost:1521/XE"; //TODO: get from properties
-            String user = "xe_nikolay";
-            String password = "12345";
+            String user = "system";
+            String password = "0660669819";
 
             Class.forName(driver); // альтернатива Driver driver = new OracleDriver();
 

@@ -1,4 +1,7 @@
+import model.implementetion.services.Authorization;
+import model.implementetion.services.Busket;
 import model.implementetion.services.OrderManager;
+import model.implementetion.services.ProductManager;
 import model.implementetion.services.util.ProductAndAmount;
 import model.interfaces.services.IOrderManager;
 import model.pojo.Customer;
@@ -43,9 +46,9 @@ public class OrderManagerTest {
         ProductAndAmount productAndAmount5 = new ProductAndAmount(product3);
         productAndAmount5.setAmount(3);
 
-        Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<ProductAndAmount>();
-        Collection<ProductAndAmount> productAndAmounts2 = new ArrayList<ProductAndAmount>();
-        Collection<ProductAndAmount> productAndAmounts3 = new ArrayList<ProductAndAmount>();
+        Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<>();
+        Collection<ProductAndAmount> productAndAmounts2 = new ArrayList<>();
+        Collection<ProductAndAmount> productAndAmounts3 = new ArrayList<>();
 
         productAndAmounts1.add(productAndAmount1);
         productAndAmounts1.add(productAndAmount3);
@@ -59,15 +62,9 @@ public class OrderManagerTest {
         Order order2 = new Order(productAndAmounts2, customer2);
         Order order3 = new Order(productAndAmounts3, customer3);
 
-        try {
-            orderManager.add(order1);
-            orderManager.add(order2);
-            orderManager.add(order3);
-        } catch (Exception exception) {
-            System.out.println("Get an exception \n" + exception.toString());
-        }
+        orderManager.add();
 
-        Collection<Order> temp = new ArrayList<Order>();
+        Collection<Order> temp = new ArrayList<>();
 
         temp.add(order1);
         temp.add(order2);
@@ -87,84 +84,46 @@ public class OrderManagerTest {
     }
 
     @Test
-    public void update() {
+    public void delete() throws Exception {
+
+        Authorization authorization = new Authorization();
+        ProductManager productManager = new ProductManager();
+        Busket busket = new Busket();
+        busket.setAuthorization(authorization);
+        busket.setProductManager(productManager);
+
+
         Customer customer1 = new Customer("user1", "Login1", "123456");
-        Customer customer2 = new Customer("user2", "Login2", "3456");
 
         Product product1 = new Product("Product1", "red", 100, 100, 100);
-        Product product2 = new Product("Product2", "white", 200, 200, 200);
         Product product3 = new Product("Product3", "black", 300, 300, 300);
 
         ProductAndAmount productAndAmount1 = new ProductAndAmount(product1);
-        ProductAndAmount productAndAmount2 = new ProductAndAmount(product2);
         ProductAndAmount productAndAmount3 = new ProductAndAmount(product3);
-        ProductAndAmount productAndAmount4 = new ProductAndAmount(product3);
-        productAndAmount4.setAmount(2);
 
-        Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<ProductAndAmount>();
-        Collection<ProductAndAmount> productAndAmounts2 = new ArrayList<ProductAndAmount>();
+        Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<>();
 
         productAndAmounts1.add(productAndAmount1);
         productAndAmounts1.add(productAndAmount3);
-
-        productAndAmounts2.add(productAndAmount2);
-        productAndAmounts2.add(productAndAmount4);
-
-        Order oldOrder = new Order(productAndAmounts1, customer1);
-        Order newOrder = new Order(productAndAmounts2, customer2);
-
-        try {
-            int id = orderManager.add(oldOrder);
-            orderManager.update(id, newOrder);
-            Assert.assertEquals(orderManager.get(id), newOrder);
-
-        } catch (Exception exception) {
-            System.out.println("Get an exception \n" + exception.toString());
-        }
-    }
-
-    @Test
-    public void delete() {
-        Customer customer1 = new Customer("user1", "Login1", "123456");
-        Customer customer2 = new Customer("user2", "Login2", "3456");
-
-        Product product1 = new Product("Product1", "red", 100, 100, 100);
-        Product product2 = new Product("Product2", "white", 200, 200, 200);
-        Product product3 = new Product("Product3", "black", 300, 300, 300);
-
-        ProductAndAmount productAndAmount1 = new ProductAndAmount(product1);
-        ProductAndAmount productAndAmount2 = new ProductAndAmount(product2);
-        ProductAndAmount productAndAmount3 = new ProductAndAmount(product3);
-        ProductAndAmount productAndAmount4 = new ProductAndAmount(product3);
-        productAndAmount4.setAmount(2);
-
-        Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<ProductAndAmount>();
-        Collection<ProductAndAmount> productAndAmounts2 = new ArrayList<ProductAndAmount>();
-
-        productAndAmounts1.add(productAndAmount1);
-        productAndAmounts1.add(productAndAmount3);
-
-        productAndAmounts2.add(productAndAmount2);
-        productAndAmounts2.add(productAndAmount4);
-
         Order order1 = new Order(productAndAmounts1, customer1);
-        Order order2 = new Order(productAndAmounts2, customer2);
 
-        Collection<Order> temp = new ArrayList<Order>();
+        Collection<Order> temp = new ArrayList<>();
 
-        try {
-            orderManager.add(order1);
-            orderManager.add(order2);
-        } catch (Exception exception) {
-            System.out.println("Get an exception \n" + exception.toString());
-        }
+        int indexOfJustAddedElement1;
+        int indexOfJustAddedElement2;
+
+        indexOfJustAddedElement1 = orderManager.add();
+        busket.clear();
+        busket.add(0);
+        busket.add(1);
+        indexOfJustAddedElement2 = orderManager.add();
 
         temp.add(order1);
-        orderManager.delete(1);
+        orderManager.delete(indexOfJustAddedElement1);
         Assert.assertEquals(orderManager.getAll(), temp);
 
         temp.clear();
-        orderManager.delete(0);
+        orderManager.delete(indexOfJustAddedElement2);
         Assert.assertEquals(orderManager.getAll(), temp);
     }
 }

@@ -23,24 +23,21 @@ public class ProductManagerTest {
     }
 
     @Test
-    public void addAndGet() throws Exception{
+    public void addAndGet() throws Exception {
         Product product1 = new Product("Cup", "red", 100, 300, 10);
         Product product2 = new Product("Mug", "blue", 100, 300, 10);
         Product product3 = new Product("Beautiful cup", "black", 100, 300, 30);
         Product product4 = new Product("Big cup", "yellow", 200, 500, 20);
         Product product5 = new Product("Small cup", "white", 50, 100, 5);
 
-        try {
-            productManager.add(product1);
-            productManager.add(product2);
-            productManager.add(product3);
-            productManager.add(product4);
-            productManager.add(product5);
-        } catch (Exception exception) {
-            System.out.println("Get an exception \n" + exception.toString());
-        }
 
-        Collection<Product> temp = new ArrayList<Product>();
+        productManager.add("Cup", "red", 100, 300, 10);
+        productManager.add("Mug", "blue", 100, 300, 10);
+        productManager.add("Beautiful cup", "black", 100, 300, 30);
+        productManager.add("Big cup", "yellow", 200, 500, 20);
+        productManager.add("Small cup", "white", 50, 100, 5);
+
+        Collection<Product> temp = new ArrayList<>();
 
         temp.add(product1);
         temp.add(product2);
@@ -89,12 +86,11 @@ public class ProductManagerTest {
 
     @Test
     public void update() {
-        Product oldProduct = new Product("Old product", "black", 100, 100, 100);
         Product newProduct = new Product("New product", "red", 200, 200, 200);
 
         try {
-            int id = productManager.add(oldProduct);
-            productManager.update(id, newProduct);
+            int id = productManager.add("Old product", "black", 100, 100, 100);
+            productManager.update(id, "New product", "red", 200, 200, 200);
             Assert.assertEquals(productManager.get(id), newProduct);
 
         } catch (Exception exception) {
@@ -105,19 +101,13 @@ public class ProductManagerTest {
     @Test
     public void delete() throws Exception {
         Product product1 = new Product("one", "sdfsdf", 10, 10, 10);
-        Product product2 = new Product("two", "sdfsdf", 10, 10, 10);
         Product product3 = new Product("three", "sdfsdf", 10, 10, 10);
 
-        Collection<Product> temp = new ArrayList<Product>();
+        Collection<Product> temp = new ArrayList<>();
 
-
-        try {
-            productManager.add(product1);
-            productManager.add(product2);
-            productManager.add(product3);
-        } catch (Exception exception) {
-            System.out.println("Get an exception \n" + exception.toString());
-        }
+        productManager.add("one", "sdfsdf", 10, 10, 10);
+        productManager.add("two", "sdfsdf", 10, 10, 10);
+        productManager.add("three", "sdfsdf", 10, 10, 10);
 
         temp.add(product1);
         temp.add(product3);
