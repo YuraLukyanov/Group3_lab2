@@ -33,6 +33,9 @@ public class BusketController implements StartService {
             case ("getOrder"):
                 result= busket.getOrder();
                 break;
+            case ("clear"):
+                result= busket.clear();
+                break;
         }
         return result;
     }

@@ -11,7 +11,10 @@
 
     <bean id="customerManager" class="model.implementetion.services.CustomerManager"/>
 
-    <bean id="orderManager" class="model.implementetion.services.OrderManager"/>
+    <bean id="orderManager"
+          class="model.implementetion.services.OrderManager">
+        <property name="busket" ref="busket"/>
+    </bean>
 
     <bean id="recomandations" class="model.implementetion.services.Recomandations">
         <property name="authorization" ref ="authorization"/>
