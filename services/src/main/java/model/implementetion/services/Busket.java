@@ -74,8 +74,9 @@ public class Busket implements IBusket {
         return null;
     }
 
-    public void clear(){
+    public boolean clear(){
         productsAndAmounts.clear();
+        return productsAndAmounts.isEmpty();
     }
 
     public void setProductManager(IProductManager productManager) {
