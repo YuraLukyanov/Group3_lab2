@@ -14,7 +14,10 @@ public class CustomerManagerController implements StartService {
     public Object runService(Object service, String method, Map<String, String> httpRequestServiceParam) throws Exception {
         ICustomerManager customerManager = (ICustomerManager) service;
         Object result = null;
-        Customer customer;
+        String name;
+        String login;
+        String password;
+
         switch (method) {
             case ("get"):
                 result = customerManager.get((int) UtilClass.castToType
@@ -31,31 +34,21 @@ public class CustomerManagerController implements StartService {
             case ("getAll"):
                 result = customerManager.getAll();
                 break;
-            case ("getByFilter"):
-                customer = new Customer();
-                customer.setName(httpRequestServiceParam.get("name"));
-                customer.setLogin(httpRequestServiceParam.get("login"));
-                customer.setPassword(httpRequestServiceParam.get("password"));
-
-                result = customerManager.getByFilter(customer);
-                break;
-
             case ("update"):
-                customer = new Customer();
-                customer.setName(httpRequestServiceParam.get("name"));
-                customer.setLogin(httpRequestServiceParam.get("login"));
-                customer.setPassword(httpRequestServiceParam.get("password"));
+                 name = httpRequestServiceParam.get("name");
+                 login = httpRequestServiceParam.get("login");
+                 password =httpRequestServiceParam.get("password");
 
                 result = customerManager.update((int) UtilClass.castToType
-                        (httpRequestServiceParam.get("id")),customer);
+                        (httpRequestServiceParam.get("id")),name,login,password);
                 break;
             case ("add"):
-                customer = new Customer();
-                customer.setName(httpRequestServiceParam.get("name"));
-                customer.setLogin(httpRequestServiceParam.get("login"));
-                customer.setPassword(httpRequestServiceParam.get("password"));
+                 name = httpRequestServiceParam.get("name");
+                 login = httpRequestServiceParam.get("login");
+                 password =httpRequestServiceParam.get("password");
 
-                result = customerManager.add(customer);
+
+                result = customerManager.add(name,login,password);
                 break;
         }
         return result;
