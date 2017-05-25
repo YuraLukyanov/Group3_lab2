@@ -75,7 +75,7 @@ public class OracleProductDAO implements ProductDAO {
         Product product = new Product();
 
         try {
-            String query = "SELECT name, color, weight, volume, price FROM Product WHERE id = " + id;
+            String query = "SELECT * FROM Product WHERE id = " + id;
             Connection connection = OracleDAOFactory.createConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -128,8 +128,7 @@ public class OracleProductDAO implements ProductDAO {
         try {
             Connection connection = OracleDAOFactory.createConnection();
 
-            String statement = "SELECT Product.name, Product.color, Product.weight, " +
-                    "Product.volume, Product.price FROM Product";
+            String statement = "SELECT * FROM Product";
 
             if (filter != null) {
                 statement += "WHERE ";
