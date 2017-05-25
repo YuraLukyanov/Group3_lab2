@@ -134,19 +134,19 @@ public class OracleProductDAO implements ProductDAO {
                 statement += "WHERE ";
 
                 if (filter.getName() != null) {
-                    statement += "name = " + filter.getName();
+                    statement += "and name = " + filter.getName();
                 }
                 if (filter.getColor() != null) {
-                    statement += "color = " + filter.getColor();
+                    statement += "and color = " + filter.getColor();
                 }
                 if (filter.getWeight() != 0) {
-                    statement += "weight = " + filter.getWeight();
+                    statement += "and weight = " + filter.getWeight();
                 }
                 if (filter.getVolume() != 0) {
-                    statement += "volume = " + filter.getVolume();
+                    statement += "and volume = " + filter.getVolume();
                 }
                 if (filter.getPrice() != 0) {
-                    statement += "price = " + filter.getPrice();
+                    statement += "and price = " + filter.getPrice();
                 }
             }
 
