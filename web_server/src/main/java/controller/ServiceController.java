@@ -77,7 +77,7 @@ public class ServiceController {
             //e.printStackTrace();
             throw new ServiceNotFoundException();
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             throw new WebServerException(e);
         }
         /*

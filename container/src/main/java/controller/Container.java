@@ -31,7 +31,8 @@ public class Container {
      * @return true if the file is successfully parsed
      */
     public boolean init(String pathToFile) {
-        File fileWithXML = new File(pathToFile);
+        File fileWithXML = new File(this.getClass().getClassLoader()
+                .getResource(pathToFile).getFile());
         if (fileWithXML.exists()) {
             this.pathToFile = pathToFile;
             XMLBeansParser xmlBeansParser = new DOMXMLBeansParser();

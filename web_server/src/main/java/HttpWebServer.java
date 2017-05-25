@@ -13,9 +13,9 @@ import java.net.Socket;
 public class HttpWebServer {
     public static void main(String[] args) {
         int port = 9999;
-        String root = System.getProperty("user.dir");
-        String filepath = "\\resources_test\\xml_files\\test_beans.xml";
-        if (!Container.getInstance().init(root+filepath)) {
+        String fileName = "test_beans.xml";
+        //String fileName = "beans.xml";
+        if (!Container.getInstance().init(fileName)) {
             System.out.println("Server not started. Can't init container");
             System.exit(-1);
         }
