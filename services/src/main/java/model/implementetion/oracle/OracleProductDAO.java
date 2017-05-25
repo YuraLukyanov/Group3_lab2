@@ -12,15 +12,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class OracleProductDAO implements ProductDAO {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OracleDAOFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OracleProductDAO.class);
 
     public int insert(Product product) throws Exception {
-        int indexOfAddedElement = -1;
+        int indexOfAddedElement;
 
         try {
+            String query =
+                    "INSERT INTO Product (id, name, color, weight, volume, price) VALUES (NULL, ?, ?, ?, ?, ?)";
+
             Connection connection = OracleDAOFactory.createConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO Product (id, name, color, weight, volume, price) VALUES (NULL, ?, ?, ?, ?, ?)");
+
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, product.getName());
             preparedStatement.setString(2, product.getColor());
             preparedStatement.setString(3, product.getWeight() + "");
@@ -28,7 +32,15 @@ public class OracleProductDAO implements ProductDAO {
             preparedStatement.setString(5, product.getPrice() + "");
             preparedStatement.execute();
 
-            //TODO: indexOfAddedElement = ...
+            //getting id of just added element from sequence
+            preparedStatement = connection
+                    .prepareStatement("select PRODUCT_AI.currval from dual");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                indexOfAddedElement = (int) resultSet.getLong(1);
+            } else throw new Exception("Can't get id of just added product.");
 
         } catch (DBConnectionException dbexception) {
             LOGGER.error(dbexception.toString());
@@ -111,7 +123,7 @@ public class OracleProductDAO implements ProductDAO {
     }
 
     public Collection<Product> selectTO(Product filter) throws Exception {
-        ArrayList<Product> products = new ArrayList<Product>();
+        ArrayList<Product> products = new ArrayList<>();
 
         try {
             Connection connection = OracleDAOFactory.createConnection();
@@ -154,9 +166,6 @@ public class OracleProductDAO implements ProductDAO {
         } catch (DBConnectionException dbexception) {
             LOGGER.error(dbexception.toString());
             throw new Exception(dbexception);
-        } catch (SQLException sqlexception) {
-            LOGGER.error(sqlexception.toString());
-            throw new Exception(sqlexception);
         } finally {
             OracleDAOFactory.closeConnection();
         }
