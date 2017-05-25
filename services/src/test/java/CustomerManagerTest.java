@@ -23,7 +23,7 @@ public class CustomerManagerTest {
     }
 
     @Test
-    public void addAndGet() {
+    public void addAndGet() throws Exception {
 
         Customer customer1 = new Customer("User1", "Login1", "1234");
         Customer customer2 = new Customer("User2", "Login2", "2345");
@@ -89,7 +89,7 @@ public class CustomerManagerTest {
     }
 
     @Test
-    public void delete() {
+    public void delete() throws Exception {
         Customer customer1 = new Customer("User1", "login1", "12345");
         Customer customer2 = new Customer("User3", "login3", "12347");
 
