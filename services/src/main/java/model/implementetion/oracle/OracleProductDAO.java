@@ -27,9 +27,9 @@ public class OracleProductDAO implements ProductDAO {
                     connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, product.getName());
             preparedStatement.setString(2, product.getColor());
-            preparedStatement.setString(3, product.getWeight() + "");
-            preparedStatement.setString(4, product.getVolume() + "");
-            preparedStatement.setString(5, product.getPrice() + "");
+            preparedStatement.setInt(3, product.getWeight());
+            preparedStatement.setInt(4, product.getVolume());
+            preparedStatement.setInt(5, product.getPrice());
             preparedStatement.execute();
 
             //getting id of just added element from sequence
@@ -107,9 +107,9 @@ public class OracleProductDAO implements ProductDAO {
                     "UPDATE Product SET NAME = ?, color = ?, weight = ?, volume = ?, price = ? WHERE id = " + id);
             preparedStatement.setString(1, newProduct.getName());
             preparedStatement.setString(2, newProduct.getColor());
-            preparedStatement.setString(3, newProduct.getWeight() + "");
-            preparedStatement.setString(4, newProduct.getVolume() + "");
-            preparedStatement.setString(5, newProduct.getPrice() + "");
+            preparedStatement.setInt(3, newProduct.getWeight());
+            preparedStatement.setInt(4, newProduct.getVolume());
+            preparedStatement.setInt(5, newProduct.getPrice());
             preparedStatement.execute();
 
         } catch (DBConnectionException dbexception) {
