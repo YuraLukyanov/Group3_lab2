@@ -34,7 +34,7 @@ public class OracleProductDAO implements ProductDAO {
 
             //getting id of just added element from sequence
             preparedStatement = connection
-                    .prepareStatement("select PRODUCT_AI.currval from dual");
+                    .prepareStatement("SELECT PRODUCT_AI.currval FROM dual");
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -131,22 +131,39 @@ public class OracleProductDAO implements ProductDAO {
             String statement = "SELECT * FROM Product";
 
             if (filter != null) {
-                statement += "WHERE ";
+                statement += " WHERE ";
+                boolean condition = false;  //to indicate does where statement already have conditions
 
                 if (filter.getName() != null) {
-                    statement += "and name = " + filter.getName();
+                    statement += "name = " + filter.getName();
+                    condition = true;
                 }
                 if (filter.getColor() != null) {
-                    statement += "and color = " + filter.getColor();
+                    if (condition) {
+                        statement += " and ";
+                    }
+                    statement += "color = " + filter.getColor();
+                    condition = true;
                 }
                 if (filter.getWeight() != 0) {
-                    statement += "and weight = " + filter.getWeight();
+                    if (condition) {
+                        statement += " and ";
+                    }
+                    statement += "weight = " + filter.getWeight();
+                    condition = true;
                 }
                 if (filter.getVolume() != 0) {
-                    statement += "and volume = " + filter.getVolume();
+                    if (condition) {
+                        statement += " and ";
+                    }
+                    statement += "volume = " + filter.getVolume();
+                    condition = true;
                 }
                 if (filter.getPrice() != 0) {
-                    statement += "and price = " + filter.getPrice();
+                    if (condition) {
+                        statement += " and ";
+                    }
+                    statement += "price = " + filter.getPrice();
                 }
             }
 
