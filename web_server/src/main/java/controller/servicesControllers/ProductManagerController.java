@@ -4,9 +4,6 @@ import model.interfaces.services.IProductManager;
 import util.UtilClass;
 import java.util.Map;
 
-/**
- * Created by Nikolion on 17.05.2017.
- */
 public class ProductManagerController implements StartService {
 
     @Override
