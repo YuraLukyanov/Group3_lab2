@@ -31,15 +31,13 @@ public class CustomerManagerTest {
         Customer customer4 = new Customer("User", "Login4", "4567");
         Customer customer5 = new Customer("User", "Login5", "5678");
 
-        try {
-            customerManager.add("User1", "Login1", "1234");
-            customerManager.add("User2", "Login2", "1234");
-            customerManager.add("User3", "Login3", "1234");
-            customerManager.add("User4", "Login4", "1234");
-            customerManager.add("User5", "Login5", "1234");
-        } catch (Exception exception) {
-            System.out.println("Get an exception \n" + exception.toString());
-        }
+        int id0, id1, id2, id3, id4;
+
+        id0 = customerManager.add("User1", "Login1", "1234");
+        id1 = customerManager.add("User2", "Login2", "1234");
+        id2 = customerManager.add("User3", "Login3", "1234");
+        id3 = customerManager.add("User4", "Login4", "1234");
+        id4 = customerManager.add("User5", "Login5", "1234");
 
         Collection<Customer> temp = new ArrayList<>();
 
@@ -51,9 +49,9 @@ public class CustomerManagerTest {
 
         Assert.assertEquals(customerManager.getAll(), temp);
 
-        Assert.assertEquals(customerManager.get(0), customer1);
+        Assert.assertEquals(customerManager.get(id0), customer1);
 
-        Assert.assertEquals(customerManager.get(2), customer3);
+        Assert.assertEquals(customerManager.get(id2), customer3);
 
         temp.clear();
         temp.add(customer3);
@@ -95,22 +93,18 @@ public class CustomerManagerTest {
 
         Collection<Customer> temp = new ArrayList<>();
 
-        try {
-            customerManager.add("User1", "login1", "12345");
-            customerManager.add("User2", "login2", "12345");
-            customerManager.add("User3", "login3", "12345");
-        } catch (Exception exception) {
-            System.out.println("Get an exception \n" + exception.toString());
-        }
+        int id0 = customerManager.add("User1", "login1", "12345");
+        int id1 = customerManager.add("User2", "login2", "12345");
+        int id2 = customerManager.add("User3", "login3", "12345");
 
         temp.add(customer1);
         temp.add(customer2);
-        customerManager.delete(1);
+        customerManager.delete(id1);
         Assert.assertEquals(customerManager.getAll(), temp);
 
         temp.clear();
         temp.add(customer1);
-        customerManager.delete(2);
+        customerManager.delete(id2);
         Assert.assertEquals(customerManager.getAll(), temp);
     }
 }
