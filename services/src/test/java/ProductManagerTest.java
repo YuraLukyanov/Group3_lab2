@@ -31,11 +31,11 @@ public class ProductManagerTest {
         Product product5 = new Product("Small cup", "white", 50, 100, 5);
 
 
-        productManager.add("Cup", "red", 100, 300, 10);
-        productManager.add("Mug", "blue", 100, 300, 10);
-        productManager.add("Beautiful cup", "black", 100, 300, 30);
-        productManager.add("Big cup", "yellow", 200, 500, 20);
-        productManager.add("Small cup", "white", 50, 100, 5);
+        int id0 = productManager.add("Cup", "red", 100, 300, 10);
+        int id1 = productManager.add("Mug", "blue", 100, 300, 10);
+        int id2 = productManager.add("Beautiful cup", "black", 100, 300, 30);
+        int id3 = productManager.add("Big cup", "yellow", 200, 500, 20);
+        int id4 = productManager.add("Small cup", "white", 50, 100, 5);
 
         Collection<Product> temp = new ArrayList<>();
 
@@ -47,9 +47,9 @@ public class ProductManagerTest {
 
         Assert.assertEquals(productManager.getAll(), temp);
 
-        Assert.assertEquals(productManager.get(0), product1);
+        Assert.assertEquals(productManager.get(id0), product1);
 
-        Assert.assertEquals(productManager.get(2), product3);
+        Assert.assertEquals(productManager.get(id2), product3);
 
         temp.clear();
         temp.add(product3);
@@ -105,18 +105,18 @@ public class ProductManagerTest {
 
         Collection<Product> temp = new ArrayList<>();
 
-        productManager.add("one", "sdfsdf", 10, 10, 10);
-        productManager.add("two", "sdfsdf", 10, 10, 10);
-        productManager.add("three", "sdfsdf", 10, 10, 10);
+        int id0 = productManager.add("one", "sdfsdf", 10, 10, 10);
+        int id1 = productManager.add("two", "sdfsdf", 10, 10, 10);
+        int id2 = productManager.add("three", "sdfsdf", 10, 10, 10);
 
         temp.add(product1);
         temp.add(product3);
-        productManager.delete(1);
+        productManager.delete(id1);
         Assert.assertEquals(productManager.getAll(), temp);
 
         temp.clear();
         temp.add(product1);
-        productManager.delete(2);
+        productManager.delete(id2);
         Assert.assertEquals(productManager.getAll(), temp);
     }
 
