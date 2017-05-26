@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-<!DOCTYPE beans [
-        <!ELEMENT beans (bean+)>
-        <!ELEMENT bean (property* )>
-        <!ATTLIST bean id ID #REQUIRED
-                       class CDATA #REQUIRED>
-        <!ELEMENT property EMPTY>
-        <!ATTLIST property name CDATA >
-        <!ATTLIST property ref CDATA >
-        <!ATTLIST property valuen CDATA>
-                ]>
--->
+
 <!--old beans-->
-<beans>
+<beans  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="beans_rules.xsd">
     <bean id="someProduct" class="controller.test_services.Product"/>
    <bean id="basket" class="controller.test_services.Basket">
         <property name="position" value="2"/>

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<beans>
+<beans  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="beans_rules.xsd">
     <bean id="authorization" class="model.implementetion.services.Authorization"/>
 
     <bean id="productManager" class="model.implementetion.services.ProductManager"/>
 
     <bean id="busket" class="model.implementetion.services.Busket">
         <property name="authorization" ref ="authorization"/>
-        <property name="productManager" ref ="productManager"/>
+        <property name="productManager" ref ="productManager" />
     </bean>
 
     <bean id="customerManager" class="model.implementetion.services.CustomerManager"/>
