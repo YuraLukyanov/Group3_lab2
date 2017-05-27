@@ -31,22 +31,27 @@ public class Container {
      * @return true if the file is successfully parsed
      */
     public boolean init(String pathToFile) {
-        File fileWithXML = new File(this.getClass().getClassLoader()
-                .getResource(pathToFile).getFile());
-        if (fileWithXML.exists()) {
-            this.pathToFile = pathToFile;
-            XMLBeansParser xmlBeansParser = new DOMXMLBeansParser();
-            //XMLBeansParser xmlBeansParser = new SAXXMLBeansParser();
-            xmlBeansParser.setFile(fileWithXML);
+        try {
+            File fileWithXML = new File(this.getClass().getClassLoader()
+                    .getResource(pathToFile).getFile());
+            if (fileWithXML.exists()) {
+                this.pathToFile = pathToFile;
+                XMLBeansParser xmlBeansParser = new DOMXMLBeansParser();
+                //XMLBeansParser xmlBeansParser = new SAXXMLBeansParser();
+                xmlBeansParser.setFile(fileWithXML);
 
 
-            if (xmlBeansParser.parseBeans()) {
-                beans = xmlBeansParser.getBeans();
-                return true;
-            } else {
-                return false;
-            }
-        } else return false;
+                if (xmlBeansParser.parseBeans()) {
+                    beans = xmlBeansParser.getBeans();
+                    return true;
+                } else {
+                    return false;
+                }
+            } else return false;
+
+        } catch (Exception e) {
+            return false;
+        }
 
 
     }

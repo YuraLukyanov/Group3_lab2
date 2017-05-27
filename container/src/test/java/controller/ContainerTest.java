@@ -24,9 +24,10 @@ public class ContainerTest {
 
     @Before
     public void initContainer() throws Exception {
-        String path = getClass().getClassLoader().getResource("test_beans.xml").getPath();
-        assertFalse("Container init from bad file",Container.getInstance().init(path+".xml"));
-        assertTrue("Container not init", Container.getInstance().init(path));
+        String fileName = "test_beans.xml";
+        assertFalse("Container init from bad file",Container.getInstance()
+                .init(fileName+ ".xml"));
+        assertTrue("Container not init", Container.getInstance().init(fileName));
 
     }
 
