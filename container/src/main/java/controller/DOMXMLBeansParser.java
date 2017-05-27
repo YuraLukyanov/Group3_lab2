@@ -51,7 +51,7 @@ public class DOMXMLBeansParser implements XMLBeansParser {
             DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             Document document = builder.parse(file);
             Bean bean = null;
-            Map<String, BeanCreator.IBean> mapWithTempBeans = new HashMap<>();
+            Map<String, IBean> mapWithTempBeans = new HashMap<>();
             NodeList beansNodeList = document.getElementsByTagName("bean");
             for (int i = 0; i < beansNodeList.getLength(); i++) {
                 Node nodeBean = beansNodeList.item(i);
@@ -103,7 +103,7 @@ public class DOMXMLBeansParser implements XMLBeansParser {
     /**
      * Class for storing data about bean
      */
-    private class Bean implements BeanCreator.IBean{
+    private class Bean implements IBean{
 
         Bean(String id, String className) throws NullPointerException {
             if (id.isEmpty() || className.isEmpty()) {

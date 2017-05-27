@@ -39,7 +39,7 @@ public class SAXXMLBeansParser implements XMLBeansParser {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
-            final Map<String, BeanCreator.IBean> mapWithTempBeans = new HashMap<>();
+            final Map<String, IBean> mapWithTempBeans = new HashMap<>();
             DefaultHandler handler = new DefaultHandler() {
                 Bean bean = new Bean();
 
@@ -87,7 +87,7 @@ public class SAXXMLBeansParser implements XMLBeansParser {
     /**
      * Class for storing data about bean
      */
-    private class Bean implements BeanCreator.IBean{
+    private class Bean implements IBean{
         String id;
         String className;
         Map<String, String> propertyVal = new HashMap<>();
