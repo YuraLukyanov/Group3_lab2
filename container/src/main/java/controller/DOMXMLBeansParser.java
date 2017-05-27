@@ -12,10 +12,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 
 /**
@@ -53,7 +51,7 @@ public class DOMXMLBeansParser implements XMLBeansParser {
             DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             Document document = builder.parse(file);
             Bean bean = null;
-            Map<String, Bean> mapWithTempBeans = new HashMap<>();
+            Map<String, BeanCreator.IBean> mapWithTempBeans = new HashMap<>();
             NodeList beansNodeList = document.getElementsByTagName("bean");
             for (int i = 0; i < beansNodeList.getLength(); i++) {
                 Node nodeBean = beansNodeList.item(i);
@@ -69,7 +67,7 @@ public class DOMXMLBeansParser implements XMLBeansParser {
                     mapWithTempBeans.put(bean.id, bean);
                 }
             }
-            createBeans(mapWithTempBeans);
+            beans = new BeanCreator(mapWithTempBeans).getResultBeans();
 
         } catch (ParserConfigurationException | SAXException |
                 IllegalArgumentException | InstantiationException |
@@ -80,64 +78,6 @@ public class DOMXMLBeansParser implements XMLBeansParser {
             return false;
         }
         return true;
-    }
-
-    protected void createBeans(Map<String, Bean> mapWithTempBeans) throws
-            ClassNotFoundException, InstantiationException,
-            IllegalAccessException, InvocationTargetException, IllegalArgumentException {
-        for (Map.Entry<String, Bean> entry : mapWithTempBeans.entrySet()) {
-            if (beans.get(entry.getKey()) == null) {
-                tryCreateBean(entry.getKey(), mapWithTempBeans);
-            } else continue;
-        }
-    }
-
-    /**
-     * Method recursively creates beans and adds them to the output map
-     * for the container
-     *
-     * @param key              id of bean
-     * @param mapWithTempBeans map with objects of class Bean
-     */
-    protected void tryCreateBean(String key, Map<String, Bean>
-            mapWithTempBeans) throws ClassNotFoundException,
-            IllegalAccessException, InstantiationException,
-            InvocationTargetException, IllegalArgumentException {
-        Bean bean = mapWithTempBeans.get(key);
-        Class beanClass = Class.forName(mapWithTempBeans.get(key).className);
-        Object beanObj = beanClass.newInstance();
-        Method[] methods = beanClass.getMethods();
-
-        for (Map.Entry<String, String> entryValueProperty : bean.propertyVal.entrySet()) {
-            Object val = interpretation(entryValueProperty.getValue());
-            for (Method m : methods) {
-                if (m.getName().equalsIgnoreCase("set" + entryValueProperty.getKey())) {
-                    Object[] args = new Object[]{val};
-                    m.invoke(beanObj, args);
-                    break;
-                }
-            }
-        }
-
-        for (Map.Entry<String, String> entryRefProperty : bean.propertyRef.entrySet()) {
-            Object ref = beans.get(entryRefProperty.getValue());
-            if (ref == null) {
-                if (mapWithTempBeans.containsKey(entryRefProperty.getValue())) {
-                    tryCreateBean(entryRefProperty.getValue(), mapWithTempBeans);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-                ref = beans.get(entryRefProperty.getValue());
-            }
-            for (Method m : methods) {
-                if (m.getName().equalsIgnoreCase("set" + entryRefProperty.getKey())) {
-                    Object[] args = new Object[]{ref};
-                    m.invoke(beanObj, args);
-                    break;
-                }
-            }
-        }
-        beans.put(key, beanObj);
     }
     /**
      * Method of parsing the parameters of the bean and adding them to the current bean
@@ -160,20 +100,10 @@ public class DOMXMLBeansParser implements XMLBeansParser {
         return bean;
     }
 
-    protected Object interpretation(String s) {
-        Scanner sc = new Scanner(s);
-        return
-                sc.hasNextInt() ? sc.nextInt() :
-                        sc.hasNextLong() ? sc.nextLong() :
-                                sc.hasNextDouble() ? sc.nextDouble() :
-                                        sc.hasNext() ? sc.next() :
-                                                s;
-    }
-
     /**
      * Class for storing data about bean
      */
-    private class Bean {
+    private class Bean implements BeanCreator.IBean{
 
         Bean(String id, String className) throws NullPointerException {
             if (id.isEmpty() || className.isEmpty()) {
@@ -187,5 +117,25 @@ public class DOMXMLBeansParser implements XMLBeansParser {
         String className;
         Map<String, String> propertyVal = new HashMap<>();
         Map<String, String> propertyRef = new HashMap<>();
+
+        @Override
+        public Map<String, String> getPropertyVal() {
+            return propertyVal;
+        }
+
+        @Override
+        public Map<String, String> getPropertyRef() {
+            return propertyRef;
+        }
+
+        @Override
+        public String getID() {
+            return id;
+        }
+
+        @Override
+        public String getClassName() {
+            return className;
+        }
     }
 }

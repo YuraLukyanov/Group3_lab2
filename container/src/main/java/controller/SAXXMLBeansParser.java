@@ -10,10 +10,8 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * Created by Nikolion on 30.04.2017.
@@ -41,7 +39,7 @@ public class SAXXMLBeansParser implements XMLBeansParser {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
-            final Map<String, Bean> mapWithTempBeans = new HashMap<>();
+            final Map<String, BeanCreator.IBean> mapWithTempBeans = new HashMap<>();
             DefaultHandler handler = new DefaultHandler() {
                 Bean bean = new Bean();
 
@@ -75,7 +73,7 @@ public class SAXXMLBeansParser implements XMLBeansParser {
             };
 
             parser.parse(file, handler);
-            createBeans(mapWithTempBeans);
+            beans = new BeanCreator(mapWithTempBeans).getResultBeans();
 
         } catch (ParserConfigurationException | SAXException | IOException |
                 IllegalAccessException |  InstantiationException |
@@ -86,79 +84,33 @@ public class SAXXMLBeansParser implements XMLBeansParser {
         return true;
     }
 
-    protected void createBeans(Map<String, Bean> mapWithTempBeans) throws
-            ClassNotFoundException, InstantiationException,
-            IllegalAccessException, InvocationTargetException, IllegalArgumentException {
-        for (Map.Entry<String, Bean> entry : mapWithTempBeans.entrySet()) {
-            if (beans.get(entry.getKey()) == null) {
-                tryCreateBean(entry.getKey(), mapWithTempBeans);
-            } else continue;
-        }
-    }
-    /**
-     * Method recursively creates beans and adds them to the output map
-     * for the container
-     *
-     * @param key              id of bean
-     * @param mapWithTempBeans map with objects of class Bean
-     */
-    protected void tryCreateBean(String key, Map<String, Bean>
-            mapWithTempBeans)  throws ClassNotFoundException,
-            IllegalAccessException, InstantiationException,
-            InvocationTargetException, IllegalArgumentException {
-        Bean bean = mapWithTempBeans.get(key);
-        Class beanClass = Class.forName(mapWithTempBeans.get(key).className);
-        Object beanObj = beanClass.newInstance();
-        Method[] methods = beanClass.getMethods();
-
-        for (Map.Entry<String, String> entryValueProperty : bean.propertyVal.entrySet()) {
-            Object val = interpretation(entryValueProperty.getValue());
-            for (Method m : methods) {
-                if (m.getName().equalsIgnoreCase("set" + entryValueProperty.getKey())) {
-                    Object[] args = new Object[]{val};
-                    m.invoke(beanObj, args);
-                    break;
-                }
-            }
-        }
-
-        for (Map.Entry<String, String> entryRefProperty : bean.propertyRef.entrySet()) {
-            Object ref = beans.get(entryRefProperty.getValue());
-            if (ref == null) {
-                if (mapWithTempBeans.containsKey(entryRefProperty.getValue())) {
-                    tryCreateBean(entryRefProperty.getValue(), mapWithTempBeans);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-                ref = beans.get(entryRefProperty.getValue());
-            }
-            for (Method m : methods) {
-                if (m.getName().equalsIgnoreCase("set" + entryRefProperty.getKey())) {
-                    Object[] args = new Object[]{ref};
-                    m.invoke(beanObj, args);
-                    break;
-                }
-            }
-        }
-        beans.put(key, beanObj);
-    }
-
-    protected Object interpretation(String s) {
-        Scanner sc = new Scanner(s);
-        return
-                sc.hasNextInt() ? sc.nextInt() :
-                        sc.hasNextLong() ? sc.nextLong() :
-                                sc.hasNextDouble() ? sc.nextDouble() :
-                                        sc.hasNext() ? sc.next() :
-                                                s;
-    }
     /**
      * Class for storing data about bean
      */
-    private class Bean {
+    private class Bean implements BeanCreator.IBean{
         String id;
         String className;
         Map<String, String> propertyVal = new HashMap<>();
         Map<String, String> propertyRef = new HashMap<>();
+
+        @Override
+        public Map<String, String> getPropertyVal() {
+            return propertyVal;
+        }
+
+        @Override
+        public Map<String, String> getPropertyRef() {
+            return propertyRef;
+        }
+
+        @Override
+        public String getID() {
+            return id;
+        }
+
+        @Override
+        public String getClassName() {
+            return className;
+        }
     }
 }
