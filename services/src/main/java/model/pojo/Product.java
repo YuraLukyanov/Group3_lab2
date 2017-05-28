@@ -1,16 +1,26 @@
 package model.pojo;
 
 public class Product {
-   private String name;
-   private String color;
-   private int volume;
-   private int weight;
-   private int price;
+    private int id;
+    private String name;
+    private String color;
+    private int volume;
+    private int weight;
+    private int price;
 
     public Product() {
     }
 
     public Product(String name, String color, int weight, int volume, int price) {
+        this.name = name;
+        this.color = color;
+        this.volume = volume;
+        this.weight = weight;
+        this.price = price;
+    }
+
+    public Product(int id, String name, String color, int volume, int weight, int price) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.volume = volume;
@@ -66,5 +76,9 @@ public class Product {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getId() {
+        return id;
     }
 }

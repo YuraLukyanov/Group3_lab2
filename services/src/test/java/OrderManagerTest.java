@@ -29,7 +29,7 @@ public class OrderManagerTest {
     }
 
     @Test
-    public void addAndGet() {
+    public void addAndGet() throws Exception {
         Customer customer1 = new Customer("user1", "Login1", "123456");
         Customer customer2 = new Customer("user2", "Login2", "3456");
         Customer customer3 = new Customer("user3", "Login3", "32675");

@@ -2,16 +2,15 @@ package model.interfaces.dao;
 
 import model.pojo.Order;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 public interface OrderDAO {
-    int insert(Order order);
+    int insert(Order order) throws Exception;
 
-    boolean delete(int id);
+    boolean delete(int id) throws Exception;
 
-    Order find(int id);
+    Order find(int id) throws Exception;
 
-    boolean update(int id, Order newOrder);
-
-    Collection<Order> selectTO(Order filterOrder);
+    Collection<Order> selectTO(String customerLogin) throws Exception;
 }
