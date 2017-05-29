@@ -10,6 +10,7 @@
     <module>services</module>
     <module>container</module>
     <module>web_server</module>
+    <module>properties</module>
   </modules>
   <name>ua-edu-group3-lab2</name>
   <url>http://maven.apache.org</url>
