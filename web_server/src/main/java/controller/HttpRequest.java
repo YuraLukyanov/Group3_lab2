@@ -1,5 +1,7 @@
 package controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,11 +9,13 @@ import java.util.Map;
  * Created by Nikolion on 11.04.2017.
  */
 public class HttpRequest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpRequest.class);
+
     public String getServiceName() {
         return serviceName;
     }
 
-    public Map<String,String> getServiceParam() {
+    public Map<String, String> getServiceParam() {
         return serviceParam;
     }
 
@@ -20,7 +24,8 @@ public class HttpRequest {
     }
 
     private String serviceName;
-    private Map<String,String> serviceParam = new HashMap<>();
+    private Map<String, String> serviceParam = new HashMap<>();
+
     /**
      * Method parse type of request
      *
@@ -36,16 +41,17 @@ public class HttpRequest {
                 throw new UnsupportedOperationException("No available this request");
             }
         } catch (Throwable e) {
-
+            LOGGER.error(e.getMessage(), e);
         }
     }
+
     /**
      * Method parse row with GET request
      *
      * @param requestRow first row of GET request
      */
     private void parseGet(String requestRow) {
-       try {
+        try {
             String requestString = requestRow.split("GET /")[1].split(" HTTP/")[0];
             String[] requestServiceNameParamRows = requestString.split("\\?");
             if (requestServiceNameParamRows.length >= 1 &&
@@ -56,13 +62,13 @@ public class HttpRequest {
                     String[] params = requestServiceNameParamRows[1].split("\\&");
                     for (String param : params) {
                         String paramValue = "";
-                        String pramName = "";
+                        String paramName = "";
                         try {
-                            pramName = param.split("\\=")[0];
+                            paramName = param.split("\\=")[0];
                             paramValue = param.split("\\=")[1];
-                            serviceParam.put(pramName,paramValue);
+                            serviceParam.put(paramName, paramValue);
                         } catch (IndexOutOfBoundsException e) {
-                            serviceParam.put(pramName,null);
+                            serviceParam.put(paramName, null);
                         }
 
                     }
@@ -72,7 +78,7 @@ public class HttpRequest {
             }
 
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(),e);
             return;
         }
     }
