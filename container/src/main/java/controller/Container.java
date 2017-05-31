@@ -5,22 +5,19 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Nikolion on 10.04.2017.
- */
 public class Container {
     private static final Container container = new Container();
     private String pathToFile;
     protected Map<String, Object> beans = Maps.newHashMap();
 
-
-    public static Container getInstance() {
+    private Container(){}
+    
+    public synchronized static Container getInstance() {
         return container;
     }
 
