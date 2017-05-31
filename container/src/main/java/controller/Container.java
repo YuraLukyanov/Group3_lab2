@@ -16,8 +16,8 @@ public class Container {
     protected Map<String, Object> beans = Maps.newHashMap();
 
     private Container(){}
-    
-    public synchronized static Container getInstance() {
+
+    public static Container getInstance() {
         return container;
     }
 
