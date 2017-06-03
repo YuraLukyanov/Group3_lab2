@@ -1,11 +1,13 @@
 package controller.servicesControllers;
 
+import controller.annotations.ControllerForService;
+import controller.annotations.StartServiceMethod;
 import model.interfaces.services.IProductManager;
 import util.UtilClass;
 import java.util.Map;
-
+@ControllerForService(name="ProductManager")
 public class ProductManagerController implements StartService {
-
+    @StartServiceMethod
     @Override
     public Object runService(Object service, String method, Map<String, String> httpRequestServiceParam) throws Exception {
         IProductManager productManager = (IProductManager) service;

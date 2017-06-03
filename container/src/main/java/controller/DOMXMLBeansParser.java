@@ -1,6 +1,8 @@
 package controller;
 
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,6 +22,7 @@ import java.util.Map;
  * Created by Nikolion on 11.04.2017.
  */
 public class DOMXMLBeansParser implements XMLBeansParser {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DOMXMLBeansParser.class);
     protected Map<String, Object> beans = Maps.newHashMap();
     protected File file;
 
@@ -74,6 +77,7 @@ public class DOMXMLBeansParser implements XMLBeansParser {
                 IOException | ClassNotFoundException |
                 InvocationTargetException |
                 IllegalAccessException e) {
+            LOGGER.error("Parse exception",e);
             e.printStackTrace();
             return false;
         }

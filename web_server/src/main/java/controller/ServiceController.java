@@ -1,10 +1,16 @@
 package controller;
 
 
+import controller.annotations.ControllerForService;
+import controller.annotations.StartServiceMethod;
 import controller.exceptions.WebServerException;
-import controller.servicesControllers.*;
+import net.sf.corn.cps.CPScanner;
+import net.sf.corn.cps.ClassFilter;
+import net.sf.corn.cps.PackageNameFilter;
 
 import javax.management.ServiceNotFoundException;
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,7 +50,33 @@ public class ServiceController {
                 throw new NullPointerException();
             }
             String serviceClassName = service.getClass().getSimpleName();
-            switch (serviceClassName) {
+
+            //Find classes in package "controller.servicesControllers"
+            // with annotations ControllerForService
+            List<Class<?>> classes = CPScanner.scanClasses(new PackageNameFilter
+                    ("controller.servicesControllers"), new ClassFilter().appendAnnotation(ControllerForService.class));
+            for (Class<?> clazz : classes) {
+                ControllerForService controllerObj = clazz.getDeclaredAnnotation(ControllerForService.class);
+
+                //If name in annotations parameter name equal service name,
+                //invoke method with annotations "StartServiceMethod"
+                if (controllerObj.name().equalsIgnoreCase(serviceClassName)) {
+                    Method[] methods = clazz.getMethods();
+                    for (Method md : methods) {
+                        if (md.isAnnotationPresent(StartServiceMethod.class)) {
+                            result = md.invoke(clazz.newInstance(),service,
+                                    method,httpRequestServiceParam);
+                            break;
+                        }
+                    }
+                    break;
+                }
+
+            }
+
+
+
+            /*switch (serviceClassName) {
                 case ("Basket"):
                     result = new BusketController().runService(service, method, httpRequestServiceParam);
                     break;
@@ -66,7 +98,7 @@ public class ServiceController {
                     break;
                 case ("Recomandations"):
                     break;
-            }
+            }*/
 
 
             if (result == null) {
