@@ -3,7 +3,10 @@ import model.implementetion.services.Busket;
 import model.implementetion.services.OrderManager;
 import model.implementetion.services.ProductManager;
 import model.implementetion.services.util.ProductAndAmount;
+import model.interfaces.services.IAuthorization;
+import model.interfaces.services.IBusket;
 import model.interfaces.services.IOrderManager;
+import model.interfaces.services.IProductManager;
 import model.pojo.Customer;
 import model.pojo.Order;
 import model.pojo.Product;
@@ -17,15 +20,27 @@ import java.util.Collection;
 
 public class OrderManagerTest {
     private IOrderManager orderManager;
+    private IBusket busket;
+    private IAuthorization authorization;
+    private IProductManager productManager;
 
     @Before
     public void init() {
+        authorization = new Authorization();
+        productManager = new ProductManager();
+        busket = new Busket();
+        busket.setAuthorization(authorization);
+        busket.setProductManager(productManager);
         orderManager = new OrderManager();
+        orderManager.setBusket(busket);
     }
 
     @After
     public void tearDown() {
         orderManager = null;
+        busket = null;
+        productManager = null;
+        authorization = null;
     }
 
     @Test
@@ -85,14 +100,6 @@ public class OrderManagerTest {
 
     @Test
     public void delete() throws Exception {
-
-        Authorization authorization = new Authorization();
-        ProductManager productManager = new ProductManager();
-        Busket busket = new Busket();
-        busket.setAuthorization(authorization);
-        busket.setProductManager(productManager);
-
-
         Customer customer1 = new Customer("user1", "Login1", "123456");
 
         Product product1 = new Product("Product1", "red", 100, 100, 100);

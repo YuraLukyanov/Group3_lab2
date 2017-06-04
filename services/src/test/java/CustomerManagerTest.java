@@ -28,16 +28,16 @@ public class CustomerManagerTest {
         Customer customer1 = new Customer("User1", "Login1", "1234");
         Customer customer2 = new Customer("User2", "Login2", "2345");
         Customer customer3 = new Customer("User3", "Login3", "3456");
-        Customer customer4 = new Customer("User", "Login4", "4567");
-        Customer customer5 = new Customer("User", "Login5", "5678");
+        Customer customer4 = new Customer("User4", "Login4", "4567");
+        Customer customer5 = new Customer("User5", "Login5", "5678");
 
         int id0, id1, id2, id3, id4;
 
         id0 = customerManager.add("User1", "Login1", "1234");
-        id1 = customerManager.add("User2", "Login2", "1234");
-        id2 = customerManager.add("User3", "Login3", "1234");
-        id3 = customerManager.add("User4", "Login4", "1234");
-        id4 = customerManager.add("User5", "Login5", "1234");
+        id1 = customerManager.add("User2", "Login2", "2345");
+        id2 = customerManager.add("User3", "Login3", "3456");
+        id3 = customerManager.add("User4", "Login4", "4567");
+        id4 = customerManager.add("User5", "Login5", "5678");
 
         Collection<Customer> temp = new ArrayList<>();
 

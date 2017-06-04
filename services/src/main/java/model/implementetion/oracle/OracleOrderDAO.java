@@ -1,7 +1,6 @@
 package model.implementetion.oracle;
 
 import com.google.common.collect.Iterables;
-import javafx.beans.binding.FloatExpression;
 import model.DAOFactory;
 import model.implementetion.oracle.exceptions.DBConnectionException;
 import model.implementetion.oracle.exceptions.WrongIDException;
@@ -26,9 +25,9 @@ public class OracleOrderDAO implements OrderDAO {
         int orderId;
 
         int customerId = order.getCustomer().getId();
-        Connection connection = OracleDAOFactory.createConnection();
+        Connection connection = OracleDAOFactory.getConnection();
         String query =
-                "INSERT INTO Orders (id, customer_id) VALUES (NULL, " + customerId + ")";
+                "INSERT INTO Orders (id, customer_id) VALUES (ORDER_AI.nextval, " + customerId + ")";
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -54,19 +53,25 @@ public class OracleOrderDAO implements OrderDAO {
             preparedStatement.execute();
         }
 
+        resultSet.close();
+        preparedStatement.close();
+        OracleDAOFactory.releaseConnection(connection);
+
         return orderId;
     }
 
     public boolean delete(int id) throws Exception {
         find(id);  //checking - does element with this id exist in DB
 
-        Connection connection = OracleDAOFactory.createConnection();
+        Connection connection = OracleDAOFactory.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "DELETE FROM Orders WHERE id = " + id);
         preparedStatement.execute();
 
-        return true;
+        preparedStatement.close();
+        OracleDAOFactory.releaseConnection(connection);
 
+        return true;
     }
 
     //TODO: change CustomerDAO to big SQL request with "join Customer"
@@ -79,7 +84,7 @@ public class OracleOrderDAO implements OrderDAO {
         CustomerDAO customerDAO = DAOFactory.getDAOFactory().getCustomerDAO();
 
         String query = "SELECT * FROM Orders WHERE id = " + id;
-        Connection connection = OracleDAOFactory.createConnection();
+        Connection connection = OracleDAOFactory.getConnection();
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
 
@@ -90,6 +95,11 @@ public class OracleOrderDAO implements OrderDAO {
 
         summ = resultSet.getInt("summ");
 
+
+        resultSet.close();
+        statement.close();
+        OracleDAOFactory.releaseConnection(connection);
+
         return new Order(id, getProductsAndAmounts(id), customer, summ);
     }
 
@@ -99,46 +109,43 @@ public class OracleOrderDAO implements OrderDAO {
         DAOFactory factory = DAOFactory.getDAOFactory();
         CustomerDAO customerDAO = factory.getCustomerDAO();
 
-        try {
-            Connection connection = OracleDAOFactory.createConnection();
+        Connection connection = OracleDAOFactory.getConnection();
 
-            String query = "SELECT * FROM Orders";
+        String query = "SELECT * FROM Orders";
 
-            if (customerLogin != null) {
-                Customer filterCustomer = new Customer();
-                filterCustomer.setLogin(customerLogin);
-                Collection<Customer> collection = customerDAO.selectTO(filterCustomer);
-                customer = Iterables.get(collection, 0);
-                query += " WHERE customer_id = " + customer.getId();
-            }
-
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                Order order = new Order();
-                order.setId(resultSet.getInt("id"));
-
-                if (customerLogin != null) order.setCustomer(customer);
-                else {
-                    int customer_id = resultSet.getInt("customer_id");
-                    Customer orderCustomer = customerDAO.find(customer_id);
-                    order.setCustomer(orderCustomer);
-                }
-
-                order.setSumm(resultSet.getInt("summ"));
-
-                Collection<ProductAndAmount> productsAndAmounts = getProductsAndAmounts(order.getId());
-                order.setProductsAndAmounts(productsAndAmounts);
-
-                orders.add(order);
-            }
-        } catch (DBConnectionException dbexception) {
-            LOGGER.error(dbexception.toString());
-            throw new Exception(dbexception);
-        } finally {
-            OracleDAOFactory.closeConnection();
+        if (customerLogin != null) {
+            Customer filterCustomer = new Customer();
+            filterCustomer.setLogin(customerLogin);
+            Collection<Customer> collection = customerDAO.selectTO(filterCustomer);
+            customer = Iterables.get(collection, 0);
+            query += " WHERE customer_id = " + customer.getId();
         }
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            Order order = new Order();
+            order.setId(resultSet.getInt("id"));
+
+            if (customerLogin != null) order.setCustomer(customer);
+            else {
+                int customer_id = resultSet.getInt("customer_id");
+                Customer orderCustomer = customerDAO.find(customer_id);
+                order.setCustomer(orderCustomer);
+            }
+
+            order.setSumm(resultSet.getInt("summ"));
+
+            Collection<ProductAndAmount> productsAndAmounts = getProductsAndAmounts(order.getId());
+            order.setProductsAndAmounts(productsAndAmounts);
+
+            orders.add(order);
+        }
+
+        resultSet.close();
+        preparedStatement.close();
+        OracleDAOFactory.releaseConnection(connection);
 
         return orders;
     }
@@ -147,7 +154,7 @@ public class OracleOrderDAO implements OrderDAO {
         Collection<ProductAndAmount> productsAndAmounts = new ArrayList<>();
 
         ProductDAO productDAO = DAOFactory.getDAOFactory().getProductDAO();
-        Connection connection = OracleDAOFactory.createConnection();
+        Connection connection = OracleDAOFactory.getConnection();
         String query = "SELECT * FROM ProductAndAmount WHERE order_id = " + orderId;
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -162,6 +169,10 @@ public class OracleOrderDAO implements OrderDAO {
 
             productsAndAmounts.add(productAndAmount);
         }
+
+        resultSet.close();
+        statement.close();
+        OracleDAOFactory.releaseConnection(connection);
 
         return productsAndAmounts;
     }

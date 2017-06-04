@@ -1,5 +1,7 @@
 package model.interfaces.services;
 
+import model.implementetion.services.Authorization;
+import model.implementetion.services.ProductManager;
 import model.implementetion.services.util.ProductAndAmount;
 import model.pojo.Order;
 import model.pojo.Product;
@@ -13,4 +15,8 @@ public interface IBusket {
     Order getOrder();
     Collection<ProductAndAmount> getProductsAndAmounts();
     boolean clear();
+
+    void setAuthorization(IAuthorization authorization);
+
+    void setProductManager(IProductManager productManager);
 }

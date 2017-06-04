@@ -14,4 +14,6 @@ public interface IOrderManager {
     int add() throws Exception;
 
     boolean delete(int id) throws Exception;
+
+    void setBusket(IBusket busket);
 }

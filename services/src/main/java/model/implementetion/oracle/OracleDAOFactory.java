@@ -9,16 +9,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class OracleDAOFactory extends DAOFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(OracleDAOFactory.class);
+    private static final int POOLDEFSIZE = 20;
+    private static final int POOLMAXSIZE = 40;
+    private static final int POOLMINSIZE = 5;
+    private static final int POOLDELTASIZE = 5;
 
-    private static Connection connection = null;
-    private static PreparedStatement preparedStatement = null;
-    private static ResultSet resultSet = null;
+    private static ConcurrentLinkedQueue<Connection> connectionPool = new ConcurrentLinkedQueue<>();
+    private static int size = 0;    //size of pool is in a separate variable because of better performance
 
-    protected static Connection createConnection() throws DBConnectionException {
+    static {
+        try {
+            for (int i = 0; i < POOLDEFSIZE; i++) {
+                connectionPool.offer(createConnection());
+                size++;
+            }
+        } catch (DBConnectionException exception) {
+            LOGGER.error("Can't connect to DB: " + exception.toString());
+            throw new RuntimeException(exception);
+        }
+    }
+
+    protected static Connection getConnection() throws DBConnectionException {
+        if (size < POOLMINSIZE) {
+            addConnToPoolInNewThread(POOLDELTASIZE);
+        }
+
+        size--;
+        return connectionPool.poll();
+    }
+
+    private static Connection createConnection() throws DBConnectionException {
+        Connection connection;
+
         try {
             String driver = "oracle.jdbc.driver.OracleDriver"; //TODO: get from properties
             String url = "jdbc:oracle:thin:@//localhost:1521/XE"; //TODO: get from properties
@@ -39,26 +66,47 @@ public class OracleDAOFactory extends DAOFactory {
         return connection;
     }
 
-    protected static void closeConnection(){
-        try {
-            if(preparedStatement != null)
-                preparedStatement.close();
-            if(connection != null)
-                connection.close();
-            if(resultSet != null)
-                resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace(); //TODO: print to log
+    protected static void releaseConnection(Connection connection) {
+        if (size > POOLMAXSIZE) {
+            //delete connections from pool
+            for (int i = 0; i < POOLDELTASIZE; i++) {
+                connectionPool.poll();
+                size--;
+            }
         }
+
+        addConnToPoolInNewThread(connection);
     }
 
     public CustomerDAO getCustomerDAO() {
         return new OracleCustomerDAO();
     }
+
     public ProductDAO getProductDAO() {
         return new OracleProductDAO();
     }
+
     public OrderDAO getOrderDAO() {
         return new OracleOrderDAO();
+    }
+
+    private static void addConnToPoolInNewThread(int amountOfConnections) {
+        new Thread(() -> {
+            try {
+                for (int i = 0; i < amountOfConnections; i++) {
+                    connectionPool.offer(createConnection());
+                    size++;
+                }
+            } catch (DBConnectionException exception) {
+                LOGGER.error("Can't connect to DB: " + exception.toString());
+            }
+        }).start();
+    }
+
+    private static void addConnToPoolInNewThread(Connection connection) {
+        new Thread(() -> {
+            connectionPool.offer(connection);
+            size++;
+        }).start();
     }
 }
