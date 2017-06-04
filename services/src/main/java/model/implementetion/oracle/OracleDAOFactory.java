@@ -8,7 +8,10 @@ import model.interfaces.dao.ProductDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.*;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -47,12 +50,22 @@ public class OracleDAOFactory extends DAOFactory {
         Connection connection;
 
         try {
-            String driver = "oracle.jdbc.driver.OracleDriver"; //TODO: get from properties
-            String url = "jdbc:oracle:thin:@//localhost:1521/XE"; //TODO: get from properties
-            String user = "system";
-            String password = "0660669819";
 
-            Class.forName(driver); // альтернатива Driver driver = new OracleDriver();
+            File file = new File("properties\\src\\main\\resources\\oracle.txt");
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+
+            String driver = properties.getProperty("DB_DRIVER_CLASS");
+            String url = properties.getProperty("DB_URL");
+            String user = properties.getProperty("DB_USERNAME");
+            String password = properties.getProperty("DB_PASSWORD");
+
+            fileInputStream.close();
+
+            //initialization of driver class (for sure)
+            Class.forName(driver);
 
             connection = DriverManager.getConnection(url, user, password);
 
