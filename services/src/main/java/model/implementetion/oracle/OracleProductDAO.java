@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class OracleProductDAO implements ProductDAO {
+class OracleProductDAO implements ProductDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(OracleProductDAO.class);
 
     public int insert(Product product) throws Exception {
@@ -68,6 +68,12 @@ public class OracleProductDAO implements ProductDAO {
         Connection connection = OracleDAOFactory.getConnection();
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
+
+
+        //DSLContext dsl = DSL.using(connection, SQLDialect.MYSQL);
+
+        //dsl.select().from(PRODUCT).
+
 
         if (!resultSet.next())
             throw new WrongIDException();

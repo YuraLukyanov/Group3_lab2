@@ -18,7 +18,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class OracleOrderDAO implements OrderDAO {
+class OracleOrderDAO implements OrderDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(OracleOrderDAO.class);
 
     public int insert(Order order) throws Exception {

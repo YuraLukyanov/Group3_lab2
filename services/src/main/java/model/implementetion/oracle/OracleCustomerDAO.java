@@ -1,6 +1,5 @@
 package model.implementetion.oracle;
 
-import model.implementetion.oracle.exceptions.DBConnectionException;
 import model.implementetion.oracle.exceptions.WrongIDException;
 import model.interfaces.dao.CustomerDAO;
 import model.pojo.Customer;
@@ -11,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class OracleCustomerDAO implements CustomerDAO {
+class OracleCustomerDAO implements CustomerDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(OracleCustomerDAO.class);
 
     public int insert(Customer customer) throws Exception {

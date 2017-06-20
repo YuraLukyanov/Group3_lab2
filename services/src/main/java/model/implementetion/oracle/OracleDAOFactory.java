@@ -5,6 +5,7 @@ import model.implementetion.oracle.exceptions.DBConnectionException;
 import model.interfaces.dao.CustomerDAO;
 import model.interfaces.dao.OrderDAO;
 import model.interfaces.dao.ProductDAO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class OracleDAOFactory extends DAOFactory {
     private static ConcurrentLinkedQueue<Connection> connectionPool = new ConcurrentLinkedQueue<>();
     private static int size = 0;    //size of pool is in a separate variable because of better performance
 
+    //adding connections to pool
     static {
         try {
             for (int i = 0; i < POOLDEFSIZE; i++) {
@@ -37,7 +39,7 @@ public class OracleDAOFactory extends DAOFactory {
         }
     }
 
-    protected static Connection getConnection() throws DBConnectionException {
+    static Connection getConnection() throws DBConnectionException {
         if (size < POOLMINSIZE) {
             addConnToPoolInNewThread(POOLDELTASIZE);
         }
@@ -51,7 +53,8 @@ public class OracleDAOFactory extends DAOFactory {
 
         try {
 
-            File file = new File("properties\\src\\main\\resources\\oracle.txt");
+            File file = new File("oracle.txt");
+
             FileInputStream fileInputStream = new FileInputStream(file);
 
             Properties properties = new Properties();
@@ -79,7 +82,7 @@ public class OracleDAOFactory extends DAOFactory {
         return connection;
     }
 
-    protected static void releaseConnection(Connection connection) {
+    static void releaseConnection(Connection connection) {
         if (size > POOLMAXSIZE) {
             //delete connections from pool
             for (int i = 0; i < POOLDELTASIZE; i++) {
