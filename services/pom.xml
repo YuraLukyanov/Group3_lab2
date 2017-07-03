@@ -19,15 +19,18 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+                <version>3.6.1</version>
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
-    <dependency>
-        <groupId>ua.edu.group3.laba2</groupId>
-        <artifactId>properties</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
+        <dependency>
+            <groupId>ua.edu.group3.laba2</groupId>
+            <artifactId>properties</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 

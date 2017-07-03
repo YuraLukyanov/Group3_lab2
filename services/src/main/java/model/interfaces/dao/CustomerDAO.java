@@ -1,9 +1,7 @@
 package model.interfaces.dao;
 
-import model.implementetion.oracle.exceptions.WrongIDException;
 import model.pojo.Customer;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
 
@@ -17,4 +15,6 @@ public interface CustomerDAO {
     boolean update(int id, Customer newCustomer) throws Exception;
 
     Collection<Customer> selectTO(Customer filterCustomer) throws Exception;
+
+    boolean deleteAll() throws Exception;
 }

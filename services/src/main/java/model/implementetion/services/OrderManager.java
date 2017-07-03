@@ -42,6 +42,12 @@ public class OrderManager implements IOrderManager{
         return orderDAO.delete(id);
     }
 
+    public boolean deleteAll() throws Exception {
+        DAOFactory factory = DAOFactory.getDAOFactory();
+        OrderDAO orderDAO = factory.getOrderDAO();
+        return orderDAO.deleteAll();
+    }
+
     public void setBusket(IBusket busket) {
         this.busket = busket;
     }

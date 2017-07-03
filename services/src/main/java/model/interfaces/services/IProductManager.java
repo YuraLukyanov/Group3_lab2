@@ -15,4 +15,5 @@ public interface IProductManager {
     boolean update(int id, String name, String color, int weight, int volume, int price) throws Exception;
     int add(String name, String color, int weight, int volume, int price) throws Exception;
     boolean delete(int id) throws Exception;
+    boolean deleteAll() throws Exception;
 }

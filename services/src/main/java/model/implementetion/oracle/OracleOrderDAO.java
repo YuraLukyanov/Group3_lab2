@@ -2,7 +2,6 @@ package model.implementetion.oracle;
 
 import com.google.common.collect.Iterables;
 import model.DAOFactory;
-import model.implementetion.oracle.exceptions.DBConnectionException;
 import model.implementetion.oracle.exceptions.WrongIDException;
 import model.implementetion.services.util.ProductAndAmount;
 import model.interfaces.dao.CustomerDAO;
@@ -23,11 +22,13 @@ class OracleOrderDAO implements OrderDAO {
 
     public int insert(Order order) throws Exception {
         int orderId;
-
         int customerId = order.getCustomer().getId();
+        int summ = order.getSumm();
+
         Connection connection = OracleDAOFactory.getConnection();
         String query =
-                "INSERT INTO Orders (id, customer_id) VALUES (ORDER_AI.nextval, " + customerId + ")";
+                "INSERT INTO Orders (id, customer_id, summ) " +
+                        "VALUES (ORDER_AI.nextval, " + customerId + ", " + summ + ")";
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -47,7 +48,7 @@ class OracleOrderDAO implements OrderDAO {
             int productId = productAndAmount.getProduct().getId();
             int amount = productAndAmount.getAmount();
             query = "INSERT INTO ProductAndAmount (id, product_id, amount, order_id) " +
-                    "VALUES (NULL," + productId + ", " + amount + ", " + orderId + ")";
+                    "VALUES (PRODUCTANDAMOUNT_AI.nextval," + productId + ", " + amount + ", " + orderId + ")";
 
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.execute();
@@ -148,6 +149,18 @@ class OracleOrderDAO implements OrderDAO {
         OracleDAOFactory.releaseConnection(connection);
 
         return orders;
+    }
+
+    public boolean deleteAll() throws Exception {
+        Connection connection = OracleDAOFactory.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "DELETE FROM Orders");
+        preparedStatement.execute();
+
+        preparedStatement.close();
+        OracleDAOFactory.releaseConnection(connection);
+
+        return true;
     }
 
     private Collection<ProductAndAmount> getProductsAndAmounts(int orderId) throws Exception {

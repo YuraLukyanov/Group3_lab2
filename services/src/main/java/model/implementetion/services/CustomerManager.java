@@ -1,5 +1,6 @@
 package model.implementetion.services;
 
+import com.google.common.collect.Iterables;
 import model.DAOFactory;
 import model.interfaces.dao.CustomerDAO;
 import model.interfaces.services.ICustomerManager;
@@ -7,7 +8,7 @@ import model.pojo.Customer;
 
 import java.util.Collection;
 
-public class CustomerManager implements ICustomerManager{
+public class CustomerManager implements ICustomerManager {
     public Customer get(int id) throws Exception {
         DAOFactory factory = DAOFactory.getDAOFactory();
         CustomerDAO customerDAO = factory.getCustomerDAO();
@@ -42,6 +43,29 @@ public class CustomerManager implements ICustomerManager{
         DAOFactory factory = DAOFactory.getDAOFactory();
         CustomerDAO customerDAO = factory.getCustomerDAO();
         return customerDAO.delete(id);
+    }
+
+    public boolean deleteAll() throws Exception {
+        DAOFactory factory = DAOFactory.getDAOFactory();
+        CustomerDAO customerDAO = factory.getCustomerDAO();
+        return customerDAO.deleteAll();
+    }
+
+    public Customer getByLogin(String admin) throws Exception {
+        Customer result;
+        Customer filter = new Customer();
+        filter.setLogin(admin);
+
+        Collection<Customer> collection = getByFilter(filter);
+
+        //getting first element
+        result = Iterables.get(collection, 0);
+
+        if (result == null) {
+            throw new Exception("There is no user with this login.");
+        }
+
+        return result;
     }
 
     private Collection<Customer> getByFilter(Customer filter) throws Exception {

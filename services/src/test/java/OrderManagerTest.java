@@ -1,12 +1,6 @@
-import model.implementetion.services.Authorization;
-import model.implementetion.services.Busket;
-import model.implementetion.services.OrderManager;
-import model.implementetion.services.ProductManager;
+import model.implementetion.services.*;
 import model.implementetion.services.util.ProductAndAmount;
-import model.interfaces.services.IAuthorization;
-import model.interfaces.services.IBusket;
-import model.interfaces.services.IOrderManager;
-import model.interfaces.services.IProductManager;
+import model.interfaces.services.*;
 import model.pojo.Customer;
 import model.pojo.Order;
 import model.pojo.Product;
@@ -19,39 +13,36 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class OrderManagerTest {
-    private IOrderManager orderManager;
-    private IBusket busket;
-    private IAuthorization authorization;
     private IProductManager productManager;
+    private IBusket busket;
+    private IOrderManager orderManager;
 
     @Before
-    public void init() {
-        authorization = new Authorization();
+    public void init() throws Exception {
         productManager = new ProductManager();
+        ICustomerManager customerManager = new CustomerManager();
+        IAuthorization authorization = new Authorization(customerManager);
+
         busket = new Busket();
         busket.setAuthorization(authorization);
         busket.setProductManager(productManager);
+
         orderManager = new OrderManager();
         orderManager.setBusket(busket);
-    }
-
-    @After
-    public void tearDown() {
-        orderManager = null;
-        busket = null;
-        productManager = null;
-        authorization = null;
+        orderManager.deleteAll();
     }
 
     @Test
     public void addAndGet() throws Exception {
-        Customer customer1 = new Customer("user1", "Login1", "123456");
-        Customer customer2 = new Customer("user2", "Login2", "3456");
-        Customer customer3 = new Customer("user3", "Login3", "32675");
+        Customer customer = new Customer("admin", "admin", "123456");
 
         Product product1 = new Product("Product1", "red", 100, 100, 100);
         Product product2 = new Product("Product2", "white", 200, 200, 200);
         Product product3 = new Product("Product3", "black", 300, 300, 300);
+
+        int idProduct1 = productManager.add("Product1", "red", 100, 100, 100);
+        int idProduct2 = productManager.add("Product2", "white", 200, 200, 200);
+        int idProduct3 = productManager.add("Product3", "black", 300, 300, 300);
 
         ProductAndAmount productAndAmount1 = new ProductAndAmount(product1);
         ProductAndAmount productAndAmount2 = new ProductAndAmount(product2);
@@ -73,11 +64,28 @@ public class OrderManagerTest {
 
         productAndAmounts3.add(productAndAmount5);
 
-        Order order1 = new Order(productAndAmounts1, customer1);
-        Order order2 = new Order(productAndAmounts2, customer2);
-        Order order3 = new Order(productAndAmounts3, customer3);
+        Order order1 = new Order(productAndAmounts1, customer);
+        Order order2 = new Order(productAndAmounts2, customer);
+        Order order3 = new Order(productAndAmounts3, customer);
 
+        //adding first order
+        busket.add(idProduct1);
+        busket.add(idProduct3);
+        int idOrder1 = orderManager.add();
+        busket.clear();
+
+        //adding second order
+        busket.add(idProduct2);
+        int prodAndAmountToChange = busket.add(idProduct3);
+        busket.setAmount(prodAndAmountToChange, 2);
         orderManager.add();
+        busket.clear();
+
+        //adding third order
+        prodAndAmountToChange = busket.add(idProduct3);
+        busket.setAmount(prodAndAmountToChange, 3);
+        int idOrder3 = orderManager.add();
+        busket.clear();
 
         Collection<Order> temp = new ArrayList<>();
 
@@ -85,11 +93,11 @@ public class OrderManagerTest {
         temp.add(order2);
         temp.add(order3);
 
-        Assert.assertEquals(orderManager.getAll(), temp);
+        Assert.assertEquals(temp, orderManager.getAll());
 
-        Assert.assertEquals(orderManager.get(0), order1);
+        Assert.assertEquals(order1, orderManager.get(idOrder1));
 
-        Assert.assertEquals(orderManager.get(2), order3);
+        Assert.assertEquals(order3, orderManager.get(idOrder3));
 
         temp.clear();
         temp.add(order1);
@@ -100,13 +108,16 @@ public class OrderManagerTest {
 
     @Test
     public void delete() throws Exception {
-        Customer customer1 = new Customer("user1", "Login1", "123456");
+        IProductManager productManager = new ProductManager();
+        Customer customer1 = new Customer("admin", "admin", "123456");
 
         Product product1 = new Product("Product1", "red", 100, 100, 100);
-        Product product3 = new Product("Product3", "black", 300, 300, 300);
+        Product product2 = new Product("Product2", "black", 300, 300, 300);
+        int idProduct1 = productManager.add("Product1", "red", 100, 100, 100);
+        int idProduct2 = productManager.add("Product2", "black", 300, 300, 300);
 
         ProductAndAmount productAndAmount1 = new ProductAndAmount(product1);
-        ProductAndAmount productAndAmount3 = new ProductAndAmount(product3);
+        ProductAndAmount productAndAmount3 = new ProductAndAmount(product2);
 
         Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<>();
 
@@ -116,21 +127,21 @@ public class OrderManagerTest {
 
         Collection<Order> temp = new ArrayList<>();
 
-        int indexOfJustAddedElement1;
-        int indexOfJustAddedElement2;
+        int idOrder1;
+        int idOrder2;
 
-        indexOfJustAddedElement1 = orderManager.add();
+        idOrder1 = orderManager.add();
         busket.clear();
-        busket.add(0);
-        busket.add(1);
-        indexOfJustAddedElement2 = orderManager.add();
+        busket.add(idProduct1);
+        busket.add(idProduct2);
+        idOrder2 = orderManager.add();
 
         temp.add(order1);
-        orderManager.delete(indexOfJustAddedElement1);
+        orderManager.delete(idOrder1);
         Assert.assertEquals(orderManager.getAll(), temp);
 
         temp.clear();
-        orderManager.delete(indexOfJustAddedElement2);
+        orderManager.delete(idOrder2);
         Assert.assertEquals(orderManager.getAll(), temp);
     }
 }

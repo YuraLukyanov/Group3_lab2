@@ -14,4 +14,6 @@ public interface ProductDAO {
     boolean update(int id, Product newProduct) throws Exception;
 
     Collection<Product> selectTO(Product filterProduct) throws Exception;
+
+    boolean deleteAll() throws Exception;
 }

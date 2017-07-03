@@ -1,5 +1,6 @@
 package model.implementetion.services;
 
+import com.google.common.collect.Iterables;
 import model.implementetion.services.util.ProductAndAmount;
 import model.interfaces.services.IAuthorization;
 import model.interfaces.services.IBusket;
@@ -15,7 +16,7 @@ import java.util.LinkedHashSet;
 public class Busket implements IBusket {
     private static final Logger LOGGER = LoggerFactory.getLogger(Busket.class);
 
-    private LinkedHashSet<ProductAndAmount> productsAndAmounts = new LinkedHashSet<>();
+    private Collection<ProductAndAmount> productsAndAmounts = new LinkedHashSet<>();
     private IAuthorization authorization;
     private IProductManager productManager;
 
@@ -64,14 +65,7 @@ public class Busket implements IBusket {
     }
 
     private ProductAndAmount getProductAndAmount(int index) {
-        int i = 0;
-        for (ProductAndAmount productAndAmount : productsAndAmounts) {
-            if (i == index) {
-                return productAndAmount;
-            }
-            i++;
-        }
-        return null;
+        return Iterables.get(productsAndAmounts, index);
     }
 
     public boolean clear(){

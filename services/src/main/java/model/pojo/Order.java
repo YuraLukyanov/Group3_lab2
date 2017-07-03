@@ -1,6 +1,6 @@
 package model.pojo;
 
-
+import model.implementetion.services.util.Helper;
 import model.implementetion.services.util.ProductAndAmount;
 
 import java.util.Collection;
@@ -49,9 +49,6 @@ public class Order {
         this.customer = customer;
     }
 
-    public int getSumm() {
-        return summ;
-    }
 
     public void setSumm(int summ) {
         this.summ = summ;
@@ -71,6 +68,11 @@ public class Order {
         return summ;
     }
 
+    public int getSumm() {
+        return summ;
+
+    }
+
     @Override
     public String toString() {
         String toString = "Order: \n" + "\t productsAndAmounts: \n";
@@ -82,5 +84,28 @@ public class Order {
         toString += "\t customer = " + customer.toString() + "\n \t summ = " + summ;
 
         return toString;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        if (summ != order.summ) return false;
+        if (!Helper.isWithSameElements(productsAndAmounts, order.productsAndAmounts)) return false;
+        return customer.equals(order.customer);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + productsAndAmounts.hashCode();
+        result = 31 * result + customer.hashCode();
+        result = 31 * result + summ;
+        return result;
     }
 }

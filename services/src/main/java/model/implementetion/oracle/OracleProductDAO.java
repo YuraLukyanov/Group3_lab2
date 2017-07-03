@@ -78,6 +78,7 @@ class OracleProductDAO implements ProductDAO {
         if (!resultSet.next())
             throw new WrongIDException();
 
+        product.setId(resultSet.getInt("id"));
         product.setName(resultSet.getString("name"));
         product.setColor(resultSet.getString("color"));
         product.setWeight(resultSet.getInt("weight"));
@@ -122,31 +123,31 @@ class OracleProductDAO implements ProductDAO {
             boolean condition = false;  //to indicate does where statement already have conditions
 
             if (filter.getName() != null) {
-                statement += "name = " + filter.getName();
+                statement += "name = '" + filter.getName() + "'";
                 condition = true;
             }
             if (filter.getColor() != null) {
                 if (condition) {
                     statement += " and ";
                 }
-                statement += "color = " + filter.getColor();
+                statement += "color = '" + filter.getColor() + "'";
                 condition = true;
             }
-            if (filter.getWeight() != 0) {
+            if (filter.getWeight() != -1) {
                 if (condition) {
                     statement += " and ";
                 }
                 statement += "weight = " + filter.getWeight();
                 condition = true;
             }
-            if (filter.getVolume() != 0) {
+            if (filter.getVolume() != -1) {
                 if (condition) {
                     statement += " and ";
                 }
                 statement += "volume = " + filter.getVolume();
                 condition = true;
             }
-            if (filter.getPrice() != 0) {
+            if (filter.getPrice() != -1) {
                 if (condition) {
                     statement += " and ";
                 }
@@ -172,5 +173,16 @@ class OracleProductDAO implements ProductDAO {
         OracleDAOFactory.releaseConnection(connection);
 
         return products;
+    }
+
+    public boolean deleteAll() throws Exception {
+       Connection connection = OracleDAOFactory.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Product");
+        preparedStatement.execute();
+
+        preparedStatement.close();
+        OracleDAOFactory.releaseConnection(connection);
+
+        return true;
     }
 }

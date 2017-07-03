@@ -68,6 +68,12 @@ public class ProductManager implements IProductManager {
         return productDAO.delete(id);
     }
 
+    public boolean deleteAll() throws Exception {
+        DAOFactory factory = DAOFactory.getDAOFactory();
+        ProductDAO productDAO = factory.getProductDAO();
+        return productDAO.deleteAll();
+    }
+
     private Collection<Product> getByFilter(Product filter) throws Exception {
         DAOFactory factory = DAOFactory.getDAOFactory();
         ProductDAO productDAO = factory.getProductDAO();

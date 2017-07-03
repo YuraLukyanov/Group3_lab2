@@ -13,4 +13,6 @@ public interface OrderDAO {
     Order find(int id) throws Exception;
 
     Collection<Order> selectTO(String customerLogin) throws Exception;
+
+    boolean deleteAll() throws Exception;
 }

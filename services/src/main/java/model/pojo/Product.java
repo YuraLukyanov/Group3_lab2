@@ -1,6 +1,7 @@
 package model.pojo;
 
 public class Product {
+
     private int id;
     private String name;
     private String color;
@@ -9,6 +10,10 @@ public class Product {
     private int price;
 
     public Product() {
+        this.volume = -1;
+        this.weight = -1;
+        this.price = -1;
+        id = -1;   //to see when this field wasn't initialize
     }
 
     public Product(String name, String color, int weight, int volume, int price) {
@@ -17,6 +22,7 @@ public class Product {
         this.volume = volume;
         this.weight = weight;
         this.price = price;
+        id = -1;   //to see when this field wasn't initialize
     }
 
     public Product(int id, String name, String color, int volume, int weight, int price) {
@@ -81,4 +87,35 @@ public class Product {
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Product product = (Product) o;
+
+        if (volume != product.volume) return false;
+        if (weight != product.weight) return false;
+        if (price != product.price) return false;
+        if (name != null ? !name.equals(product.name) : product.name != null) return false;
+        return color != null ? color.equals(product.color) : product.color == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (color != null ? color.hashCode() : 0);
+        result = 31 * result + volume;
+        result = 31 * result + weight;
+        result = 31 * result + price;
+        return result;
+    }
+
 }

@@ -13,8 +13,9 @@ public class ProductManagerTest {
     private IProductManager productManager;
 
     @Before
-    public void init() {
+    public void init() throws Exception {
         productManager = new ProductManager();
+        productManager.deleteAll();
     }
 
     @After
@@ -31,66 +32,68 @@ public class ProductManagerTest {
         Product product5 = new Product("Small cup", "white", 50, 100, 5);
 
 
-        int id0 = productManager.add("Cup", "red", 100, 300, 10);
-        int id1 = productManager.add("Mug", "blue", 100, 300, 10);
-        int id2 = productManager.add("Beautiful cup", "black", 100, 300, 30);
-        int id3 = productManager.add("Big cup", "yellow", 200, 500, 20);
-        int id4 = productManager.add("Small cup", "white", 50, 100, 5);
+        int id1 = productManager.add("Cup", "red", 100, 300, 10);
+        productManager.add("Mug", "blue", 100, 300, 10);
+        int id3 = productManager.add("Beautiful cup", "black", 100, 300, 30);
+        productManager.add("Big cup", "yellow", 200, 500, 20);
+        productManager.add("Small cup", "white", 50, 100, 5);
 
-        Collection<Product> temp = new ArrayList<>();
+        Collection<Product> expected = new ArrayList<>();
+        
+        expected.add(product1);
+        expected.add(product2);
+        expected.add(product3);
+        expected.add(product4);
+        expected.add(product5);
 
-        temp.add(product1);
-        temp.add(product2);
-        temp.add(product3);
-        temp.add(product4);
-        temp.add(product5);
+        Util.assertEquals(productManager.getAll(), expected);
 
-        Assert.assertEquals(productManager.getAll(), temp);
+        Product product = productManager.get(id1);
 
-        Assert.assertEquals(productManager.get(id0), product1);
+        Assert.assertEquals(product, product1);
 
-        Assert.assertEquals(productManager.get(id2), product3);
+        Assert.assertEquals(productManager.get(id3), product3);
 
-        temp.clear();
-        temp.add(product3);
-        Assert.assertEquals(productManager.getByName("Mug"), temp);
+        expected.clear();
+        expected.add(product2);
+        Util.assertEquals(productManager.getByName("Mug"), expected);
+        
+        expected.clear();
+        expected.add(product1);
+        Util.assertEquals(productManager.getByColor("red"), expected);
 
-        temp.clear();
-        temp.add(product1);
-        Assert.assertEquals(productManager.getByColor("red"), temp);
-
-        temp.clear();
-        temp.add(product1);
-        temp.add(product2);
-        temp.add(product3);
-        Assert.assertEquals(productManager.getByWeight(100), temp);
-
-
-        temp.clear();
-        temp.add(product4);
-        Assert.assertEquals(productManager.getByVolume(500), temp);
+        expected.clear();
+        expected.add(product1);
+        expected.add(product2);
+        expected.add(product3);
+        Util.assertEquals(productManager.getByWeight(100), expected);
 
 
-        temp.clear();
-        temp.add(product5);
-        Assert.assertEquals(productManager.getByPrice(5), temp);
+        expected.clear();
+        expected.add(product4);
+        Util.assertEquals(productManager.getByVolume(500), expected);
 
-        temp.clear();
-        temp.add(product1);
-        temp.add(product2);
-        temp.add(product3);
-        temp.add(product4);
-        temp.add(product5);
-        Assert.assertEquals(productManager.getAll(), temp);
+
+        expected.clear();
+        expected.add(product5);
+        Util.assertEquals(productManager.getByPrice(5), expected);
+
+        expected.clear();
+        expected.add(product1);
+        expected.add(product2);
+        expected.add(product3);
+        expected.add(product4);
+        expected.add(product5);
+        Util.assertEquals(productManager.getAll(), expected);
     }
 
     @Test
     public void update() {
-        Product newProduct = new Product("New product", "red", 200, 200, 200);
+        Product newProduct = new Product("New product", "red", 400, 500, 600);
 
         try {
-            int id = productManager.add("Old product", "black", 100, 100, 100);
-            productManager.update(id, "New product", "red", 200, 200, 200);
+            int id = productManager.add("Old product", "black", 100, 200, 300);
+            productManager.update(id, "New product", "red", 400, 500, 600);
             Assert.assertEquals(productManager.get(id), newProduct);
 
         } catch (Exception exception) {
@@ -112,12 +115,12 @@ public class ProductManagerTest {
         temp.add(product1);
         temp.add(product3);
         productManager.delete(id1);
-        Assert.assertEquals(productManager.getAll(), temp);
+        Util.assertEquals(productManager.getAll(), temp);
 
         temp.clear();
         temp.add(product1);
         productManager.delete(id2);
-        Assert.assertEquals(productManager.getAll(), temp);
+        Util.assertEquals(productManager.getAll(), temp);
     }
 
 

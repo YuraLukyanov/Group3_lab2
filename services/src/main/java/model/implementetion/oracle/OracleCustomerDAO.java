@@ -86,11 +86,11 @@ class OracleCustomerDAO implements CustomerDAO {
         find(id);   //checking - does element with this id exist in DB
 
         Connection connection = OracleDAOFactory.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE Product SET NAME = ?, login = ?, password = ? WHERE id = " + id);
+        String statement = "UPDATE Customer SET NAME = ?, login = ?, PASSWORD = ? WHERE id = " + id;
+        PreparedStatement preparedStatement = connection.prepareStatement(statement);
         preparedStatement.setString(1, newCustomer.getName());
         preparedStatement.setString(2, newCustomer.getLogin());
-        preparedStatement.setString(3, newCustomer.getPassword() + "");
+        preparedStatement.setString(3, newCustomer.getPassword());
         preparedStatement.execute();
 
         preparedStatement.close();
@@ -111,21 +111,21 @@ class OracleCustomerDAO implements CustomerDAO {
             boolean condition = false;
 
             if (filter.getName() != null) {
-                statement += "name = " + filter.getName();
+                statement += "name = '" + filter.getName() + "'";
                 condition = true;
             }
             if (filter.getLogin() != null) {
                 if (condition) {
                     statement += " and ";
                 }
-                statement += "login = " + filter.getLogin();
+                statement += "login = '" + filter.getLogin() + "'";
                 condition = true;
             }
             if (filter.getPassword() != null) {
                 if (condition) {
                     statement += " and ";
                 }
-                statement += "password = " + filter.getPassword();
+                statement += "password = '" + filter.getPassword() + "'";
             }
         }
 
@@ -134,6 +134,7 @@ class OracleCustomerDAO implements CustomerDAO {
 
         while (resultSet.next()) {
             Customer customer = new Customer();
+            customer.setId(resultSet.getInt("id"));
             customer.setName(resultSet.getString("name"));
             customer.setLogin(resultSet.getString("login"));
             customer.setPassword(resultSet.getString("password"));
@@ -145,6 +146,18 @@ class OracleCustomerDAO implements CustomerDAO {
         OracleDAOFactory.releaseConnection(connection);
 
         return customers;
+    }
+
+    public boolean deleteAll() throws Exception {
+        Connection connection = OracleDAOFactory.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "DELETE FROM Customer");
+        preparedStatement.execute();
+
+        preparedStatement.close();
+        OracleDAOFactory.releaseConnection(connection);
+
+        return true;
     }
 
 }

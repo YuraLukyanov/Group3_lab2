@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URI;
+import java.net.URL;
 import java.sql.*;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -35,7 +37,7 @@ public class OracleDAOFactory extends DAOFactory {
             }
         } catch (DBConnectionException exception) {
             LOGGER.error("Can't connect to DB: " + exception.toString());
-            throw new RuntimeException(exception);
+            //throw new RuntimeException(exception);
         }
     }
 
@@ -53,7 +55,9 @@ public class OracleDAOFactory extends DAOFactory {
 
         try {
 
-            File file = new File("oracle.txt");
+            URL fileUrl = OracleDAOFactory.class.getResource("/oracle.txt");
+            URI fileUri = fileUrl.toURI();
+            File file = new File(fileUri);
 
             FileInputStream fileInputStream = new FileInputStream(file);
 
