@@ -1,7 +1,6 @@
 import model.implementetion.services.ProductManager;
 import model.interfaces.services.IProductManager;
 import model.pojo.Product;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +15,6 @@ public class ProductManagerTest {
     public void init() throws Exception {
         productManager = new ProductManager();
         productManager.deleteAll();
-    }
-
-    @After
-    public void tearDown() {
-        productManager = null;
     }
 
     @Test
@@ -46,37 +40,37 @@ public class ProductManagerTest {
         expected.add(product4);
         expected.add(product5);
 
-        Util.assertEquals(productManager.getAll(), expected);
+        Util.assertEquals(expected, productManager.getAll());
 
         Product product = productManager.get(id1);
 
-        Assert.assertEquals(product, product1);
+        Assert.assertEquals(product1, product);
 
-        Assert.assertEquals(productManager.get(id3), product3);
+        Assert.assertEquals(product3, productManager.get(id3));
 
         expected.clear();
         expected.add(product2);
-        Util.assertEquals(productManager.getByName("Mug"), expected);
+        Util.assertEquals(expected, productManager.getByName("Mug"));
         
         expected.clear();
         expected.add(product1);
-        Util.assertEquals(productManager.getByColor("red"), expected);
+        Util.assertEquals(expected, productManager.getByColor("red"));
 
         expected.clear();
         expected.add(product1);
         expected.add(product2);
         expected.add(product3);
-        Util.assertEquals(productManager.getByWeight(100), expected);
+        Util.assertEquals(expected, productManager.getByWeight(100));
 
 
         expected.clear();
         expected.add(product4);
-        Util.assertEquals(productManager.getByVolume(500), expected);
+        Util.assertEquals(expected, productManager.getByVolume(500));
 
 
         expected.clear();
         expected.add(product5);
-        Util.assertEquals(productManager.getByPrice(5), expected);
+        Util.assertEquals(expected, productManager.getByPrice(5));
 
         expected.clear();
         expected.add(product1);
@@ -84,7 +78,7 @@ public class ProductManagerTest {
         expected.add(product3);
         expected.add(product4);
         expected.add(product5);
-        Util.assertEquals(productManager.getAll(), expected);
+        Util.assertEquals(expected, productManager.getAll());
     }
 
     @Test
@@ -106,21 +100,21 @@ public class ProductManagerTest {
         Product product1 = new Product("one", "sdfsdf", 10, 10, 10);
         Product product3 = new Product("three", "sdfsdf", 10, 10, 10);
 
-        Collection<Product> temp = new ArrayList<>();
+        Collection<Product> expected = new ArrayList<>();
 
         int id0 = productManager.add("one", "sdfsdf", 10, 10, 10);
         int id1 = productManager.add("two", "sdfsdf", 10, 10, 10);
         int id2 = productManager.add("three", "sdfsdf", 10, 10, 10);
 
-        temp.add(product1);
-        temp.add(product3);
+        expected.add(product1);
+        expected.add(product3);
         productManager.delete(id1);
-        Util.assertEquals(productManager.getAll(), temp);
+        Util.assertEquals(expected, productManager.getAll());
 
-        temp.clear();
-        temp.add(product1);
+        expected.clear();
+        expected.add(product1);
         productManager.delete(id2);
-        Util.assertEquals(productManager.getAll(), temp);
+        Util.assertEquals(expected, productManager.getAll());
     }
 
 

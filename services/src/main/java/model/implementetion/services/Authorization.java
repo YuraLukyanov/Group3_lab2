@@ -7,12 +7,17 @@ import model.pojo.Customer;
 
 public class Authorization implements IAuthorization {
     private Customer customer;
+    private ICustomerManager customerManager;
 
-    public Authorization(ICustomerManager customerManager) throws Exception {
+    public Authorization() throws Exception {
         customer = customerManager.getByLogin("admin");
     }
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public void setCustomerManager(ICustomerManager customerManager) {
+        this.customerManager = customerManager;
     }
 }

@@ -13,9 +13,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Nikolion on 11.04.2017.
- */
 public class ServiceController {
 
     Object serviceResponse;
@@ -95,8 +92,6 @@ public class ServiceController {
                 case ("ProductManager"):
                     result = new ProductManagerController().runService
                             (service, method, httpRequestServiceParam);
-                    break;
-                case ("Recomandations"):
                     break;
             }*/
 

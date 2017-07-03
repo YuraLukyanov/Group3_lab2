@@ -28,7 +28,7 @@ public class Busket implements IBusket {
         Product product = productManager.get(id);
 
         if (productsAndAmounts.add(new ProductAndAmount(product))) {
-            return productsAndAmounts.size() - 1; //return index of recently added element
+            return productsAndAmounts.size() - 1;   //return index of recently added element
         } else {
             LOGGER.error("Can't add - " + product.toString() + "to busket.");
             throw new Exception("Can't add this product to busket.");
@@ -36,7 +36,7 @@ public class Busket implements IBusket {
     }
 
     public boolean delete(int index) {
-        if (index > productsAndAmounts.size() - 1) {
+        if (index > productsAndAmounts.size() - 1 || index < 0) {
             return false;
         }
 

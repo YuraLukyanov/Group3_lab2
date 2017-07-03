@@ -21,7 +21,6 @@ public class CustomerManagerTest {
     @After
     public void tearDown() throws Exception {
         customerManager.add("admin", "admin", "123456");
-        customerManager = null;
     }
 
     @Test
@@ -33,45 +32,45 @@ public class CustomerManagerTest {
         Customer customer4 = new Customer("User4", "Login4", "4567");
         Customer customer5 = new Customer("User5", "Login5", "5678");
 
-        int id0, id1, id2, id3, id4;
+        int id1, id3;
 
-        id0 = customerManager.add("User1", "Login1", "1234");
-        id1 = customerManager.add("User2", "Login2", "2345");
-        id2 = customerManager.add("User3", "Login3", "3456");
-        id3 = customerManager.add("User4", "Login4", "4567");
-        id4 = customerManager.add("User5", "Login5", "5678");
+        id1 = customerManager.add("User1", "Login1", "1234");
+        customerManager.add("User2", "Login2", "2345");
+        id3 = customerManager.add("User3", "Login3", "3456");
+        customerManager.add("User4", "Login4", "4567");
+        customerManager.add("User5", "Login5", "5678");
 
-        Collection<Customer> temp = new ArrayList<>();
+        Collection<Customer> expected = new ArrayList<>();
 
-        temp.add(customer1);
-        temp.add(customer2);
-        temp.add(customer3);
-        temp.add(customer4);
-        temp.add(customer5);
+        expected.add(customer1);
+        expected.add(customer2);
+        expected.add(customer3);
+        expected.add(customer4);
+        expected.add(customer5);
 
-        Util.assertEquals(customerManager.getAll(), temp);
+        Util.assertEquals(expected, customerManager.getAll());
 
-        Assert.assertEquals(customerManager.get(id0), customer1);
+        Assert.assertEquals(customer1, customerManager.get(id1));
 
-        Assert.assertEquals(customerManager.get(id2), customer3);
+        Assert.assertEquals(customer3, customerManager.get(id3));
 
-        temp.clear();
-        temp.add(customer4);
-        Assert.assertEquals(customerManager.getByName("User4"), temp);
+        expected.clear();
+        expected.add(customer4);
+        Assert.assertEquals(expected, customerManager.getByName("User4"));
 
-        temp.clear();
-        temp.add(customer4);
-        temp.add(customer5);
+        expected.clear();
+        expected.add(customer4);
+        expected.add(customer5);
         Customer filter = new Customer();
         filter.setName("User");
 
-        temp.clear();
-        temp.add(customer1);
-        temp.add(customer2);
-        temp.add(customer3);
-        temp.add(customer4);
-        temp.add(customer5);
-        Util.assertEquals(customerManager.getAll(), temp);
+        expected.clear();
+        expected.add(customer1);
+        expected.add(customer2);
+        expected.add(customer3);
+        expected.add(customer4);
+        expected.add(customer5);
+        Util.assertEquals(expected, customerManager.getAll());
     }
 
     @Test
@@ -88,20 +87,20 @@ public class CustomerManagerTest {
         Customer customer1 = new Customer("User1", "login1", "12345");
         Customer customer2 = new Customer("User3", "login3", "12345");
 
-        Collection<Customer> temp = new ArrayList<>();
+        Collection<Customer> expected = new ArrayList<>();
 
         customerManager.add("User1", "login1", "12345");
         int id1 = customerManager.add("User2", "login2", "12345");
         int id2 = customerManager.add("User3", "login3", "12345");
 
-        temp.add(customer1);
-        temp.add(customer2);
+        expected.add(customer1);
+        expected.add(customer2);
         customerManager.delete(id1);
-        Util.assertEquals(customerManager.getAll(), temp);
+        Util.assertEquals(expected, customerManager.getAll());
 
-        temp.clear();
-        temp.add(customer1);
+        expected.clear();
+        expected.add(customer1);
         customerManager.delete(id2);
-        Assert.assertEquals(customerManager.getAll(), temp);
+        Assert.assertEquals(expected, customerManager.getAll());
     }
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beans  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="beans_rules.xsd">
-    <bean id="authorization" class="model.implementetion.services.Authorization"/>
+    <bean id="authorization" class="model.implementetion.services.Authorization">
+        <property name="customerManager" ref ="customerManager" />
+    </bean>
 
     <bean id="productManager" class="model.implementetion.services.ProductManager"/>
 
@@ -15,11 +17,6 @@
     <bean id="orderManager"
           class="model.implementetion.services.OrderManager">
         <property name="busket" ref="busket"/>
-    </bean>
-
-    <bean id="recomandations" class="model.implementetion.services.Recomandations">
-        <property name="authorization" ref ="authorization"/>
-        <property name="productManager" ref ="productManager"/>
     </bean>
 
 </beans>

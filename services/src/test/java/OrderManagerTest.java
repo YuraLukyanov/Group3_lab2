@@ -21,7 +21,8 @@ public class OrderManagerTest {
     public void init() throws Exception {
         productManager = new ProductManager();
         ICustomerManager customerManager = new CustomerManager();
-        IAuthorization authorization = new Authorization(customerManager);
+        IAuthorization authorization = new Authorization();
+        authorization.setCustomerManager(customerManager);
 
         busket = new Busket();
         busket.setAuthorization(authorization);
@@ -87,23 +88,23 @@ public class OrderManagerTest {
         int idOrder3 = orderManager.add();
         busket.clear();
 
-        Collection<Order> temp = new ArrayList<>();
+        Collection<Order> expected = new ArrayList<>();
 
-        temp.add(order1);
-        temp.add(order2);
-        temp.add(order3);
+        expected.add(order1);
+        expected.add(order2);
+        expected.add(order3);
 
-        Assert.assertEquals(temp, orderManager.getAll());
+        Assert.assertEquals(expected, orderManager.getAll());
 
         Assert.assertEquals(order1, orderManager.get(idOrder1));
 
         Assert.assertEquals(order3, orderManager.get(idOrder3));
 
-        temp.clear();
-        temp.add(order1);
-        temp.add(order2);
-        temp.add(order3);
-        Assert.assertEquals(orderManager.getAll(), temp);
+        expected.clear();
+        expected.add(order1);
+        expected.add(order2);
+        expected.add(order3);
+        Assert.assertEquals(expected, orderManager.getAll());
     }
 
     @Test
@@ -125,7 +126,7 @@ public class OrderManagerTest {
         productAndAmounts1.add(productAndAmount3);
         Order order1 = new Order(productAndAmounts1, customer1);
 
-        Collection<Order> temp = new ArrayList<>();
+        Collection<Order> expected = new ArrayList<>();
 
         int idOrder1;
         int idOrder2;
@@ -136,12 +137,12 @@ public class OrderManagerTest {
         busket.add(idProduct2);
         idOrder2 = orderManager.add();
 
-        temp.add(order1);
+        expected.add(order1);
         orderManager.delete(idOrder1);
-        Assert.assertEquals(orderManager.getAll(), temp);
+        Assert.assertEquals(expected, orderManager.getAll());
 
-        temp.clear();
+        expected.clear();
         orderManager.delete(idOrder2);
-        Assert.assertEquals(orderManager.getAll(), temp);
+        Assert.assertEquals(expected, orderManager.getAll());
     }
 }

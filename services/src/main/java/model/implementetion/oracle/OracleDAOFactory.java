@@ -37,7 +37,7 @@ public class OracleDAOFactory extends DAOFactory {
             }
         } catch (DBConnectionException exception) {
             LOGGER.error("Can't connect to DB: " + exception.toString());
-            //throw new RuntimeException(exception);
+            throw new RuntimeException(exception);
         }
     }
 
