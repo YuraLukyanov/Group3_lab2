@@ -9,15 +9,12 @@ public class Authorization implements IAuthorization {
     private Customer customer;
     private ICustomerManager customerManager;
 
-    public Authorization() throws Exception {
-        customer = customerManager.getByLogin("admin");
-    }
-
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomerManager(ICustomerManager customerManager) {
+    public void setCustomerManager(ICustomerManager customerManager) throws Exception {
         this.customerManager = customerManager;
+        customer = customerManager.getByLogin("admin");
     }
 }
