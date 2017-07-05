@@ -48,7 +48,7 @@ public class CustomerManagerTest {
         expected.add(customer4);
         expected.add(customer5);
 
-        Util.assertEquals(expected, customerManager.getAll());
+        UtilAssert.assertEquals(expected, customerManager.getAll());
 
         Assert.assertEquals(customer1, customerManager.get(id1));
 
@@ -70,7 +70,7 @@ public class CustomerManagerTest {
         expected.add(customer3);
         expected.add(customer4);
         expected.add(customer5);
-        Util.assertEquals(expected, customerManager.getAll());
+        UtilAssert.assertEquals(expected, customerManager.getAll());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class CustomerManagerTest {
         expected.add(customer1);
         expected.add(customer2);
         customerManager.delete(id1);
-        Util.assertEquals(expected, customerManager.getAll());
+        UtilAssert.assertEquals(expected, customerManager.getAll());
 
         expected.clear();
         expected.add(customer1);

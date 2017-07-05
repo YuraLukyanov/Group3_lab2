@@ -17,6 +17,7 @@ public class Busket implements IBusket {
     private static final Logger LOGGER = LoggerFactory.getLogger(Busket.class);
 
     private Collection<ProductAndAmount> productsAndAmounts = new LinkedHashSet<>();
+
     private IAuthorization authorization;
     private IProductManager productManager;
 

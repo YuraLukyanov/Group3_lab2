@@ -3,6 +3,7 @@ package model.implementetion.oracle;
 import model.implementetion.oracle.exceptions.WrongIDException;
 import model.interfaces.dao.ProductDAO;
 import model.pojo.Product;
+import oracle.jdbc.proxy.annotation.Pre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,173 +17,241 @@ class OracleProductDAO implements ProductDAO {
     public int insert(Product product) throws Exception {
         int indexOfAddedElement;
 
-        String query =
-                "INSERT INTO Product (id, name, color, weight, volume, price) VALUES (NULL, ?, ?, ?, ?, ?)";
-
         Connection connection = OracleDAOFactory.getConnection();
+        PreparedStatement statement1 = null;
+        PreparedStatement statement2 = null;
+        ResultSet resultSet = null;
+        try {
+            //connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection.setAutoCommit(false);
+            String query = "INSERT INTO Product (id, name, color, weight, volume, price) VALUES (NULL, ?, ?, ?, ?, ?)";
+            statement1 =
+                    connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement1.setString(1, product.getName());
+            statement1.setString(2, product.getColor());
+            statement1.setInt(3, product.getWeight());
+            statement1.setInt(4, product.getVolume());
+            statement1.setInt(5, product.getPrice());
+            statement1.execute();
 
-        PreparedStatement preparedStatement =
-                connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1, product.getName());
-        preparedStatement.setString(2, product.getColor());
-        preparedStatement.setInt(3, product.getWeight());
-        preparedStatement.setInt(4, product.getVolume());
-        preparedStatement.setInt(5, product.getPrice());
-        preparedStatement.execute();
+            connection.commit();
 
-        //getting id of just added element from sequence
-        preparedStatement = connection
-                .prepareStatement("SELECT PRODUCT_AI.currval FROM dual");
+        } catch (SQLException exception) {
+            connection.rollback();
+            Util.close(statement1);
+            OracleDAOFactory.releaseConnection(connection);
+            throw exception;
+        }
 
-        ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            //getting id of just added element from sequence
+            statement2 = connection.prepareStatement("SELECT PRODUCT_AI.currval FROM dual");
+            resultSet = statement2.executeQuery();
 
-        if (resultSet.next()) {
-            indexOfAddedElement = (int) resultSet.getLong(1);
-        } else throw new Exception("Can't get id of just added product.");
+            if (resultSet.next()) {
+                indexOfAddedElement = (int) resultSet.getLong(1);
+            } else throw new Exception("Can't get id of just added product.");
 
-        resultSet.close();
-        preparedStatement.close();
-        OracleDAOFactory.releaseConnection(connection);
-
-        return indexOfAddedElement;
+            return indexOfAddedElement;
+        } catch (Exception exception){
+            connection.rollback();
+            throw exception;
+        } finally {
+            Util.close(resultSet);
+            Util.close(statement1);
+            Util.close(statement2);
+            OracleDAOFactory.releaseConnection(connection);
+        }
     }
 
     public boolean delete(int id) throws Exception {
-        find(id);  //checking - does element with this id exist in DB
+        //checking - does element with this id exist in DB
+        find(id);  //throws WrongIDException if it doesn't exist
 
         Connection connection = OracleDAOFactory.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "DELETE FROM Product WHERE id = " + id);
-        preparedStatement.execute();
-
-        preparedStatement.close();
-        OracleDAOFactory.releaseConnection(connection);
-
-        return true;
+        PreparedStatement statement = null;
+        try {
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement("DELETE FROM Product WHERE id = ?");
+            statement.setInt(1, id);
+            statement.execute();
+            connection.commit();
+            return true;
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            Util.close(statement);
+            OracleDAOFactory.releaseConnection(connection);
+        }
     }
 
+    /**
+     * @param id of product to find
+     * @return product
+     * @throws Exception: WrongIDException if product with this id doesn't exist
+     *                    SQL exception if something wrong with SQL
+     */
     public Product find(int id) throws Exception {
-        Product product = new Product();
-
-        String query = "SELECT * FROM Product WHERE id = " + id;
         Connection connection = OracleDAOFactory.getConnection();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement("SELECT * FROM Product WHERE id = ?");
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
 
+            if (!resultSet.next())
+                throw new WrongIDException();
 
-        //DSLContext dsl = DSL.using(connection, SQLDialect.MYSQL);
+            Product result = new Product();
+            result.setId(resultSet.getInt("id"));
+            result.setName(resultSet.getString("name"));
+            result.setColor(resultSet.getString("color"));
+            result.setWeight(resultSet.getInt("weight"));
+            result.setVolume(resultSet.getInt("volume"));
+            result.setPrice(resultSet.getInt("price"));
 
-        //dsl.select().from(PRODUCT).
-
-
-        if (!resultSet.next())
-            throw new WrongIDException();
-
-        product.setId(resultSet.getInt("id"));
-        product.setName(resultSet.getString("name"));
-        product.setColor(resultSet.getString("color"));
-        product.setWeight(resultSet.getInt("weight"));
-        product.setVolume(resultSet.getInt("volume"));
-        product.setPrice(resultSet.getInt("price"));
-
-        resultSet.close();
-        statement.close();
-        OracleDAOFactory.releaseConnection(connection);
-
-        return product;
+            connection.commit();
+            return result;
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            Util.close(resultSet);
+            Util.close(statement);
+            OracleDAOFactory.releaseConnection(connection);
+        }
     }
 
     public boolean update(int id, Product newProduct) throws Exception {
         find(id);   //checking - does element with this id exist in DB
 
         Connection connection = OracleDAOFactory.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE Product SET NAME = ?, color = ?, weight = ?, volume = ?, price = ? WHERE id = " + id);
-        preparedStatement.setString(1, newProduct.getName());
-        preparedStatement.setString(2, newProduct.getColor());
-        preparedStatement.setInt(3, newProduct.getWeight());
-        preparedStatement.setInt(4, newProduct.getVolume());
-        preparedStatement.setInt(5, newProduct.getPrice());
-        preparedStatement.execute();
+        PreparedStatement statement = null;
+        try {
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement("UPDATE Product" +
+                    " SET NAME = ?, color = ?, weight = ?, volume = ?, price = ? WHERE id = " + id);
+            statement.setString(1, newProduct.getName());
+            statement.setString(2, newProduct.getColor());
+            statement.setInt(3, newProduct.getWeight());
+            statement.setInt(4, newProduct.getVolume());
+            statement.setInt(5, newProduct.getPrice());
+            statement.execute();
 
-        preparedStatement.close();
-        OracleDAOFactory.releaseConnection(connection);
-
-        return true;
+            connection.commit();
+            return true;
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            Util.close(statement);
+            OracleDAOFactory.releaseConnection(connection);
+        }
     }
 
     public Collection<Product> selectTO(Product filter) throws Exception {
-        ArrayList<Product> products = new ArrayList<>();
+        ArrayList<Product> result = new ArrayList<>();
 
         Connection connection = OracleDAOFactory.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
 
-        String statement = "SELECT * FROM Product";
+        StringBuilder query = new StringBuilder("SELECT * FROM Product");
 
         if (filter != null) {
-            statement += " WHERE ";
+            query.append(" WHERE ");
             boolean condition = false;  //to indicate does where statement already have conditions
 
             if (filter.getName() != null) {
-                statement += "name = '" + filter.getName() + "'";
+                query.append("name = '");
+                query.append(filter.getName());
+                query.append("'");
                 condition = true;
             }
             if (filter.getColor() != null) {
                 if (condition) {
-                    statement += " and ";
+                    query.append(" and ");
                 }
-                statement += "color = '" + filter.getColor() + "'";
+                query.append("color = '");
+                query.append(filter.getColor());
+                query.append("'");
                 condition = true;
             }
             if (filter.getWeight() != -1) {
                 if (condition) {
-                    statement += " and ";
+                    query.append(" and ");
                 }
-                statement += "weight = " + filter.getWeight();
+                query.append("weight = ");
+                query.append(filter.getWeight());
                 condition = true;
             }
             if (filter.getVolume() != -1) {
                 if (condition) {
-                    statement += " and ";
+                    query.append(" and ");
                 }
-                statement += "volume = " + filter.getVolume();
+                query.append("volume = ");
+                query.append(filter.getVolume());
                 condition = true;
             }
             if (filter.getPrice() != -1) {
                 if (condition) {
-                    statement += " and ";
+                    query.append(" and ");
                 }
-                statement += "price = " + filter.getPrice();
+                query.append("price = ");
+                query.append(filter.getPrice());
             }
         }
 
-        PreparedStatement preparedStatement = connection.prepareStatement(statement);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(query.toString());
+            resultSet = statement.executeQuery();
 
-        while (resultSet.next()) {
-            Product product = new Product();
-            product.setName(resultSet.getString("name"));
-            product.setColor(resultSet.getString("color"));
-            product.setWeight(resultSet.getInt("weight"));
-            product.setVolume(resultSet.getInt("volume"));
-            product.setPrice(resultSet.getInt("price"));
-            products.add(product);
+            while (resultSet.next()) {
+                Product product = new Product();
+                product.setName(resultSet.getString("name"));
+                product.setColor(resultSet.getString("color"));
+                product.setWeight(resultSet.getInt("weight"));
+                product.setVolume(resultSet.getInt("volume"));
+                product.setPrice(resultSet.getInt("price"));
+                result.add(product);
+            }
+
+            connection.commit();
+            return result;
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            Util.close(resultSet);
+            Util.close(statement);
+            OracleDAOFactory.releaseConnection(connection);
         }
-
-        resultSet.close();
-        preparedStatement.close();
-        OracleDAOFactory.releaseConnection(connection);
-
-        return products;
     }
 
     public boolean deleteAll() throws Exception {
-       Connection connection = OracleDAOFactory.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Product");
-        preparedStatement.execute();
-
-        preparedStatement.close();
-        OracleDAOFactory.releaseConnection(connection);
-
-        return true;
+        Connection connection = OracleDAOFactory.getConnection();
+        PreparedStatement statement = null;
+        try {
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            //connection.setAutoCommit(false);
+            statement = connection.prepareStatement("DELETE FROM Product");
+            statement.execute();
+            //connection.commit();
+            return true;
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            Util.close(statement);
+            OracleDAOFactory.releaseConnection(connection);
+        }
     }
 }

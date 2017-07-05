@@ -31,7 +31,7 @@ class OracleOrderDAO implements OrderDAO {
                         "VALUES (ORDER_AI.nextval, " + customerId + ", " + summ + ")";
 
         PreparedStatement preparedStatement =
-                connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                connection.prepareStatement(query);
 
         preparedStatement.execute();
 

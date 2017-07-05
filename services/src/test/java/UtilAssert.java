@@ -3,7 +3,7 @@ import org.junit.Assert;
 
 import java.util.Collection;
 
-class Util {
+class UtilAssert {
     //assertEquals for collections without considering the order of elements
     static void assertEquals(Collection<?> expected, Collection<?> actual) {
         if (!Helper.isWithSameElements(expected, actual)) {
