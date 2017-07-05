@@ -82,4 +82,9 @@ public class ProductManager implements IProductManager {
     public boolean delete(int id) throws Exception {
         return true;
     }
+
+    @Override
+    public boolean deleteAll() throws Exception {
+        return false;
+    }
 }

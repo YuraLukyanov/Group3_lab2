@@ -16,8 +16,8 @@ public class HttpWebServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpWebServer.class);
     public static void main(String[] args) {
         int port = 9999;
-        String fileName = "test_beans.xml";
-        //String fileName = "beans.xml";
+        //String fileName = "test_beans.xml";
+        String fileName = "beans.xml";
         if (!Container.getInstance().init(fileName)) {
             LOGGER.error("Server not started. Can't init container");
             System.out.println("Server not started. Can't init container");
