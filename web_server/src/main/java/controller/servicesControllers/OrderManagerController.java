@@ -1,14 +1,15 @@
 package controller.servicesControllers;
 
+import controller.annotations.ControllerForService;
+import controller.annotations.StartServiceMethod;
 import model.interfaces.services.IOrderManager;
 import util.UtilClass;
 
 import java.util.Map;
 
-/**
- * Created by Nikolion on 17.05.2017.
- */
+@ControllerForService(name="OrderManager")
 public class OrderManagerController implements StartService {
+    @StartServiceMethod
     @Override
     public Object runService(Object service, String method, Map<String, String> httpRequestServiceParam) throws Exception {
         IOrderManager orderManager = (IOrderManager) service;

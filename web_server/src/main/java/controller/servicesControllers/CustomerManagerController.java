@@ -1,15 +1,16 @@
 package controller.servicesControllers;
 
+import controller.annotations.ControllerForService;
+import controller.annotations.StartServiceMethod;
 import model.interfaces.services.ICustomerManager;
 import model.pojo.Customer;
 import util.UtilClass;
 
 import java.util.Map;
 
-/**
- * Created by Nikolion on 17.05.2017.
- */
+@ControllerForService(name="CustomerManager")
 public class CustomerManagerController implements StartService {
+    @StartServiceMethod
     @Override
     public Object runService(Object service, String method, Map<String, String> httpRequestServiceParam) throws Exception {
         ICustomerManager customerManager = (ICustomerManager) service;
