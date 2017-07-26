@@ -43,6 +43,7 @@ public class OracleDAOFactory extends DAOFactory {
 
     static Connection getConnection() throws DBConnectionException {
         if (size < POOLMINSIZE) {
+            connectionPool.add(createConnection());
             addConnToPoolInNewThread(POOLDELTASIZE);
         }
 

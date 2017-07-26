@@ -174,6 +174,7 @@ class OracleOrderDAO implements OrderDAO {
 
         while (resultSet.next()) {
             int product_id = resultSet.getInt("product_id");
+            //TODO: productID can be null => 0
             Product product = productDAO.find(product_id);
             int amount = resultSet.getInt("amount");
 

@@ -3,7 +3,6 @@ package model.implementetion.oracle;
 import model.implementetion.oracle.exceptions.WrongIDException;
 import model.interfaces.dao.ProductDAO;
 import model.pojo.Product;
-import oracle.jdbc.proxy.annotation.Pre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ class OracleProductDAO implements ProductDAO {
             } else throw new Exception("Can't get id of just added product.");
 
             return indexOfAddedElement;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             connection.rollback();
             throw exception;
         } finally {
@@ -88,42 +87,49 @@ class OracleProductDAO implements ProductDAO {
     }
 
     /**
+     * Method uses try with resources. It close all of the resources for sure
+     *
+     *
      * @param id of product to find
      * @return product
      * @throws Exception: WrongIDException if product with this id doesn't exist
      *                    SQL exception if something wrong with SQL
      */
     public Product find(int id) throws Exception {
-        Connection connection = OracleDAOFactory.getConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
+        String query = "SELECT * FROM Product WHERE id = ?";
+        Connection connection = null;
         try {
+            connection = OracleDAOFactory.getConnection();
             connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement("SELECT * FROM Product WHERE id = ?");
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
 
-            if (!resultSet.next())
-                throw new WrongIDException();
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, id);
 
-            Product result = new Product();
-            result.setId(resultSet.getInt("id"));
-            result.setName(resultSet.getString("name"));
-            result.setColor(resultSet.getString("color"));
-            result.setWeight(resultSet.getInt("weight"));
-            result.setVolume(resultSet.getInt("volume"));
-            result.setPrice(resultSet.getInt("price"));
+                try (ResultSet resultSet = statement.executeQuery()) {
 
-            connection.commit();
-            return result;
-        } catch (SQLException exception) {
-            connection.rollback();
-            throw exception;
+                    if (!resultSet.next())
+                        throw new WrongIDException();
+
+                    Product result = new Product();
+                    result.setId(resultSet.getInt("id"));
+                    result.setName(resultSet.getString("name"));
+                    result.setColor(resultSet.getString("color"));
+                    result.setWeight(resultSet.getInt("weight"));
+                    result.setVolume(resultSet.getInt("volume"));
+                    result.setPrice(resultSet.getInt("price"));
+
+                    connection.commit();
+                    return result;
+                } catch (SQLException | WrongIDException exception) {
+                    connection.rollback();
+                    throw exception;
+                }
+            }
         } finally {
-            Util.close(resultSet);
-            Util.close(statement);
-            OracleDAOFactory.releaseConnection(connection);
+            if (connection != null) {
+                OracleDAOFactory.releaseConnection(connection);
+            }
         }
     }
 
@@ -166,7 +172,7 @@ class OracleProductDAO implements ProductDAO {
 
         if (filter != null) {
             query.append(" WHERE ");
-            boolean condition = false;  //to indicate does where statement already have conditions
+            boolean condition = false;  //to indicate does WHERE statement already have conditions
 
             if (filter.getName() != null) {
                 query.append("name = '");
