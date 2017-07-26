@@ -87,16 +87,29 @@ public class OracleDAOFactory extends DAOFactory {
         return connection;
     }
 
-    static void releaseConnection(Connection connection) {
+    static void releaseConnection(Connection connection) throws SQLException {
         if (size > POOLMAXSIZE) {
             //delete connections from pool
-            for (int i = 0; i < POOLDELTASIZE; i++) {
-                connectionPool.poll();
-                size--;
-            }
+            deleteConnFromPoolInNewThread();
         }
 
-        addConnToPoolInNewThread(connection);
+        connectionPool.offer(connection);
+        size++;
+
+    }
+
+    private static void deleteConnFromPoolInNewThread() {
+        new Thread(() -> {
+            for (int i = 0; i < POOLDELTASIZE; i++) {
+                Connection conn = connectionPool.poll();
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error("Can't to close a connection! Get an exception: " + e.toString());
+                }
+                size--;
+            }
+        });
     }
 
     public CustomerDAO getCustomerDAO() {
@@ -124,10 +137,4 @@ public class OracleDAOFactory extends DAOFactory {
         }).start();
     }
 
-    private static void addConnToPoolInNewThread(Connection connection) {
-        new Thread(() -> {
-            connectionPool.offer(connection);
-            size++;
-        }).start();
-    }
 }

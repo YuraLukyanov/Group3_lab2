@@ -75,8 +75,6 @@ class OracleOrderDAO implements OrderDAO {
         return true;
     }
 
-    //TODO: change CustomerDAO to big SQL request with "join Customer"
-    //TODO: change ProductDAO to big SQL request with "join Product"
     public Order find(int id) throws Exception {
         Customer customer;
         int customer_id;
@@ -174,7 +172,6 @@ class OracleOrderDAO implements OrderDAO {
 
         while (resultSet.next()) {
             int product_id = resultSet.getInt("product_id");
-            //TODO: productID can be null => 0
             Product product = productDAO.find(product_id);
             int amount = resultSet.getInt("amount");
 

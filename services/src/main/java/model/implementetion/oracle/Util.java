@@ -1,19 +1,37 @@
 package model.implementetion.oracle;
 
-import java.sql.ResultSet;
+import org.slf4j.Logger;
+
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
+
 
 class Util {
-    static void close(ResultSet resultSet) throws SQLException {
-        if (resultSet != null) {
-            resultSet.close();
+
+    @SuppressWarnings("WeakerAccess")
+     protected static void close(Connection connection, Exception globalException, Logger LOGGER) throws Exception {
+        if (connection != null) {
+            try {
+                OracleDAOFactory.releaseConnection(connection);
+            } catch(SQLException e){
+                LOGGER.error("Can't to release a connection. Get an exception: " + e.toString());
+                if (globalException != null) globalException.addSuppressed(e);
+                else globalException = e;
+                throw globalException;
+            }
         }
     }
 
-    static void close(Statement statement) throws SQLException {
-        if (statement != null) {
-            statement.close();
+    @SuppressWarnings("WeakerAccess")
+    protected static void rollback(Connection connection, Exception localException, Logger LOGGER) throws Exception {
+        try {
+            connection.rollback();
+        } catch (SQLException ex) {
+            LOGGER.error("Can't to make a rollback on the connection: " + connection.toString());
+            if (localException != null) localException.addSuppressed(ex);
+            else localException = ex;
+            throw localException;
         }
     }
+
 }

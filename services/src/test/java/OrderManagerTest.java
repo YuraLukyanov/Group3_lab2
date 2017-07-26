@@ -34,6 +34,45 @@ public class OrderManagerTest {
     }
 
     @Test
+    public void delete() throws Exception {
+        IProductManager productManager = new ProductManager();
+        Customer customer1 = new Customer("admin", "admin", "123456");
+
+        Product product1 = new Product("Product1", "red", 100, 100, 100);
+        Product product2 = new Product("Product2", "black", 300, 300, 300);
+        int idProduct1 = productManager.add("Product1", "red", 100, 100, 100);
+        int idProduct2 = productManager.add("Product2", "black", 300, 300, 300);
+
+        ProductAndAmount productAndAmount1 = new ProductAndAmount(product1);
+        ProductAndAmount productAndAmount3 = new ProductAndAmount(product2);
+
+        Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<>();
+
+        productAndAmounts1.add(productAndAmount1);
+        productAndAmounts1.add(productAndAmount3);
+        Order order1 = new Order(productAndAmounts1, customer1);
+
+        Collection<Order> expected = new ArrayList<>();
+
+        int idOrder1;
+        int idOrder2;
+
+        idOrder1 = orderManager.add();
+        busket.clear();
+        busket.add(idProduct1);
+        busket.add(idProduct2);
+        idOrder2 = orderManager.add();
+
+        expected.add(order1);
+        orderManager.delete(idOrder1);
+        Assert.assertEquals(expected, orderManager.getAll());
+
+        //expected.clear();
+        orderManager.delete(idOrder2);
+        Assert.assertEquals(expected, orderManager.getAll());
+    }
+
+    @Test
     public void addAndGet() throws Exception {
         Customer customer = new Customer("admin", "admin", "123456");
 
@@ -107,42 +146,5 @@ public class OrderManagerTest {
         Assert.assertEquals(expected, orderManager.getAll());
     }
 
-    @Test
-    public void delete() throws Exception {
-        IProductManager productManager = new ProductManager();
-        Customer customer1 = new Customer("admin", "admin", "123456");
 
-        Product product1 = new Product("Product1", "red", 100, 100, 100);
-        Product product2 = new Product("Product2", "black", 300, 300, 300);
-        int idProduct1 = productManager.add("Product1", "red", 100, 100, 100);
-        int idProduct2 = productManager.add("Product2", "black", 300, 300, 300);
-
-        ProductAndAmount productAndAmount1 = new ProductAndAmount(product1);
-        ProductAndAmount productAndAmount3 = new ProductAndAmount(product2);
-
-        Collection<ProductAndAmount> productAndAmounts1 = new ArrayList<>();
-
-        productAndAmounts1.add(productAndAmount1);
-        productAndAmounts1.add(productAndAmount3);
-        Order order1 = new Order(productAndAmounts1, customer1);
-
-        Collection<Order> expected = new ArrayList<>();
-
-        int idOrder1;
-        int idOrder2;
-
-        idOrder1 = orderManager.add();
-        busket.clear();
-        busket.add(idProduct1);
-        busket.add(idProduct2);
-        idOrder2 = orderManager.add();
-
-        expected.add(order1);
-        orderManager.delete(idOrder1);
-        Assert.assertEquals(expected, orderManager.getAll());
-
-        expected.clear();
-        orderManager.delete(idOrder2);
-        Assert.assertEquals(expected, orderManager.getAll());
-    }
 }
