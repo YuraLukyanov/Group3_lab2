@@ -1,4 +1,4 @@
-package controller.servicesControllers;
+package controller.services;
 
 import controller.annotations.ControllerForService;
 import controller.annotations.StartServiceMethod;
@@ -29,6 +29,7 @@ public class OrderManagerController implements StartService {
             case ("add"):
                 result = orderManager.add();
                 break;
+            default: /*NOP*/
         }
         return result;
     }

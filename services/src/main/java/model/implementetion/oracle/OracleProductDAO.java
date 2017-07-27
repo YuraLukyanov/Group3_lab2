@@ -196,6 +196,58 @@ class OracleProductDAO implements ProductDAO {
 
         Connection connection = null;
 
+        String query = createQueryFromFilter(filter);
+
+        try {
+            connection = OracleDAOFactory.getConnection();
+            //connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+
+            try (PreparedStatement statement = connection.prepareStatement(query);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    Product product = new Product();
+                    product.setName(resultSet.getString("name"));
+                    product.setColor(resultSet.getString("color"));
+                    product.setWeight(resultSet.getInt("weight"));
+                    product.setVolume(resultSet.getInt("volume"));
+                    product.setPrice(resultSet.getInt("price"));
+                    result.add(product);
+                }
+            }
+
+            return result;
+        } catch (SQLException e) {
+            throw exception = e;
+        } finally {
+            Util.close(connection, exception, LOGGER);
+            if (exception != null) throw exception;
+        }
+    }
+
+    public boolean deleteAll() throws Exception {
+        Exception exception = null;
+        Connection connection = null;
+        try {
+            connection = OracleDAOFactory.getConnection();
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            //connection.setAutoCommit(false);
+
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM Product")) {
+                statement.execute();
+                //connection.commit();
+                return true;
+            }
+        } catch (SQLException e) {
+            connection.rollback();
+            throw exception = e;
+        } finally {
+            Util.close(connection, exception, LOGGER);
+            if (exception != null) throw exception;
+        }
+    }
+
+    private String createQueryFromFilter(Product filter){
         StringBuilder query = new StringBuilder("SELECT * FROM Product");
 
         if (filter != null) {
@@ -242,52 +294,6 @@ class OracleProductDAO implements ProductDAO {
             }
         }
 
-        try {
-            connection = OracleDAOFactory.getConnection();
-            //connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-
-            try (PreparedStatement statement = connection.prepareStatement(query.toString());
-                 ResultSet resultSet = statement.executeQuery()) {
-
-                while (resultSet.next()) {
-                    Product product = new Product();
-                    product.setName(resultSet.getString("name"));
-                    product.setColor(resultSet.getString("color"));
-                    product.setWeight(resultSet.getInt("weight"));
-                    product.setVolume(resultSet.getInt("volume"));
-                    product.setPrice(resultSet.getInt("price"));
-                    result.add(product);
-                }
-            }
-
-            return result;
-        } catch (SQLException e) {
-            throw exception = e;
-        } finally {
-            Util.close(connection, exception, LOGGER);
-            if (exception != null) throw exception;
-        }
-    }
-
-    public boolean deleteAll() throws Exception {
-        Exception exception = null;
-        Connection connection = null;
-        try {
-            connection = OracleDAOFactory.getConnection();
-            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            //connection.setAutoCommit(false);
-
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM Product")) {
-                statement.execute();
-                //connection.commit();
-                return true;
-            }
-        } catch (SQLException e) {
-            connection.rollback();
-            throw exception = e;
-        } finally {
-            Util.close(connection, exception, LOGGER);
-            if (exception != null) throw exception;
-        }
+        return query.toString();
     }
 }

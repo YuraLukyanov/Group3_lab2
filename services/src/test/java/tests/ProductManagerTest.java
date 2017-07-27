@@ -1,3 +1,5 @@
+package tests;
+
 import model.implementetion.services.ProductManager;
 import model.interfaces.services.IProductManager;
 import model.pojo.Product;
@@ -95,7 +97,7 @@ public class ProductManagerTest {
 
         Collection<Product> expected = new ArrayList<>();
 
-        int id0 = productManager.add("one", "sdfsdf", 10, 10, 10);
+        productManager.add("one", "sdfsdf", 10, 10, 10);
         int id1 = productManager.add("two", "sdfsdf", 10, 10, 10);
         int id2 = productManager.add("three", "sdfsdf", 10, 10, 10);
 

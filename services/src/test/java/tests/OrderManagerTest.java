@@ -1,10 +1,11 @@
+package tests;
+
 import model.implementetion.services.*;
 import model.implementetion.services.util.ProductAndAmount;
 import model.interfaces.services.*;
 import model.pojo.Customer;
 import model.pojo.Order;
 import model.pojo.Product;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

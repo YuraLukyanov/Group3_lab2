@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Created by Nikolion on 11.04.2017.
- */
 public class HttpWebServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpWebServer.class);
     public static void main(String[] args) {
@@ -32,7 +29,7 @@ public class HttpWebServer {
         } catch (IOException e) {
             System.out.println("Port " + port + " is blocked.");
             LOGGER.error("Port " + port + " is blocked.");
-            System.exit(-1);
+            throw new RuntimeException("Can't to start a server. Exception: " + e.toString());
         }
 
         while (true) {
@@ -43,7 +40,7 @@ public class HttpWebServer {
                 Thread.sleep(100);//for more stability
             } catch (IOException e) {
                 LOGGER.error("Failed to establish connection",e);
-                System.exit(-1);
+                throw new RuntimeException("Failed to establish connection. Exception: " + e.toString());
             } catch (InterruptedException e) {
                 LOGGER.error("Thread error",e);
             }

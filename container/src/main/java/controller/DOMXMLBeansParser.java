@@ -18,9 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-/**
- * Created by Nikolion on 11.04.2017.
- */
 public class DOMXMLBeansParser implements XMLBeansParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(DOMXMLBeansParser.class);
     protected Map<String, Object> beans = Maps.newHashMap();
@@ -108,6 +105,13 @@ public class DOMXMLBeansParser implements XMLBeansParser {
      * Class for storing data about bean
      */
     private class Bean implements IBean{
+        protected String id;
+        @SuppressWarnings("WeakerAccess")
+        protected String className;
+        @SuppressWarnings("WeakerAccess")
+        protected Map<String, String> propertyVal = new HashMap<>();
+        @SuppressWarnings("WeakerAccess")
+        protected Map<String, String> propertyRef = new HashMap<>();
 
         Bean(String id, String className) throws NullPointerException {
             if (id.isEmpty() || className.isEmpty()) {
@@ -116,11 +120,6 @@ public class DOMXMLBeansParser implements XMLBeansParser {
             this.id = id;
             this.className = className;
         }
-
-        String id;
-        String className;
-        Map<String, String> propertyVal = new HashMap<>();
-        Map<String, String> propertyRef = new HashMap<>();
 
         @Override
         public Map<String, String> getPropertyVal() {

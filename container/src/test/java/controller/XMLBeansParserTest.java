@@ -12,17 +12,14 @@ import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by Nikolion on 11.04.2017.
- */
 public class XMLBeansParserTest {
 
-    XMLBeansParser dOMXmlBeanParser = null;
-    XMLBeansParser saxXMLParser = null;
-    Product testProduct1 = new Product();
-    Product testProduct2 = new Product();
-    TestAddProduct addProduct = new TestAddProduct();
-    Basket basket = new Basket();
+    private XMLBeansParser dOMXmlBeanParser = null;
+    private XMLBeansParser saxXMLParser = null;
+    private Product testProduct1 = new Product();
+    private Product testProduct2 = new Product();
+    private TestAddProduct addProduct = new TestAddProduct();
+    private Basket basket = new Basket();
 
     {
         testProduct2.setId(555);
@@ -33,7 +30,7 @@ public class XMLBeansParserTest {
     }
 
     @Before
-    public void CreateXMLBeanParseTest() throws Exception {
+    public void createXMLBeanParseTest() throws Exception {
         String path = getClass().getClassLoader().getResource("test_beans.xml").getPath();
         dOMXmlBeanParser = new DOMXMLBeansParser();
         dOMXmlBeanParser.setFile(new File(path));

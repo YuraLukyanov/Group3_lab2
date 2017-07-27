@@ -1,4 +1,4 @@
-package controller.servicesControllers;
+package controller.services;
 
 import controller.annotations.ControllerForService;
 import controller.annotations.StartServiceMethod;
@@ -96,6 +96,7 @@ public class ProductManagerController implements StartService {
             case ("getAll"):
                 result = productManager.getAll();
                 break;
+            default: /*NOP*/
 
         }
         return result;

@@ -2,7 +2,6 @@ package model.interfaces.dao;
 
 import model.pojo.Order;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
 public interface OrderDAO {

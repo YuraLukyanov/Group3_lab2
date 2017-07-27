@@ -13,9 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Nikolion on 30.04.2017.
- */
 public class SAXXMLBeansParser implements XMLBeansParser {
     protected Map<String, Object> beans = Maps.newHashMap();
     protected File file;
@@ -88,10 +85,13 @@ public class SAXXMLBeansParser implements XMLBeansParser {
      * Class for storing data about bean
      */
     private class Bean implements IBean{
-        String id;
-        String className;
-        Map<String, String> propertyVal = new HashMap<>();
-        Map<String, String> propertyRef = new HashMap<>();
+        protected String id;
+        @SuppressWarnings("WeakerAccess")
+        protected String className;
+        @SuppressWarnings("WeakerAccess")
+        protected Map<String, String> propertyVal = new HashMap<>();
+        @SuppressWarnings("WeakerAccess")
+        protected Map<String, String> propertyRef = new HashMap<>();
 
         @Override
         public Map<String, String> getPropertyVal() {

@@ -1,9 +1,8 @@
-package controller.servicesControllers;
+package controller.services;
 
 import controller.annotations.ControllerForService;
 import controller.annotations.StartServiceMethod;
 import model.interfaces.services.ICustomerManager;
-import model.pojo.Customer;
 import util.UtilClass;
 
 import java.util.Map;
@@ -51,6 +50,7 @@ public class CustomerManagerController implements StartService {
 
                 result = customerManager.add(name,login,password);
                 break;
+            default: /*NOP*/
         }
         return result;
     }

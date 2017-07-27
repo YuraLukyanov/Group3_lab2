@@ -3,10 +3,7 @@ package controller;
 import java.io.File;
 import java.util.Map;
 
-/**
- * Created by Nikolion on 29.04.2017.
- */
-public interface XMLBeansParser {
+interface XMLBeansParser {
     /**
      * Method set file with beans
      *

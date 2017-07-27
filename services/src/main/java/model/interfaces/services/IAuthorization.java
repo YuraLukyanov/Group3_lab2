@@ -1,9 +1,8 @@
 package model.interfaces.services;
 
-
 import model.pojo.Customer;
 
 public interface IAuthorization {
-    Customer getCustomer();
-    void setCustomerManager(ICustomerManager customerManager) throws Exception;
+    Customer getCustomer() throws Exception;
+    void setCustomerManager(ICustomerManager customerManager);
 }

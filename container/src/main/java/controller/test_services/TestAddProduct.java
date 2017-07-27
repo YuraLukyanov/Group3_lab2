@@ -1,10 +1,8 @@
 package controller.test_services;
 
-/**
- * Created by Nikolion on 16.04.2017.
- */
+
 public class TestAddProduct {
-    Product product;
+    private Product product;
 
     @Override
     public boolean equals(Object o) {
@@ -23,7 +21,8 @@ public class TestAddProduct {
         return product != null ? product.hashCode() : 0;
     }
 
-    public Product getProduct() {
+    @SuppressWarnings("WeakerAccess")
+    protected Product getProduct() {
         return product;
     }
 

@@ -1,4 +1,4 @@
-package controller.servicesControllers;
+package controller.services;
 
 import controller.annotations.ControllerForService;
 import controller.annotations.StartServiceMethod;
@@ -37,6 +37,7 @@ public class BusketController implements StartService {
             case ("clear"):
                 result= busket.clear();
                 break;
+            default: /*NOP*/
         }
         return result;
     }

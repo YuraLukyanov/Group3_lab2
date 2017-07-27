@@ -1,4 +1,4 @@
-package controller.servicesControllers;
+package controller.services;
 
 import controller.annotations.ControllerForService;
 import controller.annotations.StartServiceMethod;
@@ -16,6 +16,7 @@ public class AuthorizationController implements StartService {
             case ("getCustomer"):
                 result = authorization.getCustomer();
                 break;
+            default: /*NOP*/
         }
         return result;
     }

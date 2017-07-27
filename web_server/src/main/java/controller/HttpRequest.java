@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Nikolion on 11.04.2017.
- */
 public class HttpRequest {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpRequest.class);
+
+    private String serviceName;
+    private Map<String, String> serviceParam = new HashMap<>();
 
     public String getServiceName() {
         return serviceName;
@@ -22,9 +22,6 @@ public class HttpRequest {
     HttpRequest(String request) {
         parseStringRequestToValues(request);
     }
-
-    private String serviceName;
-    private Map<String, String> serviceParam = new HashMap<>();
 
     /**
      * Method parse type of request

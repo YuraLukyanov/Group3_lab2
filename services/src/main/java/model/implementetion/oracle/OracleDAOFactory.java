@@ -41,7 +41,7 @@ public class OracleDAOFactory extends DAOFactory {
         }
     }
 
-    static Connection getConnection() throws DBConnectionException {
+    protected static Connection getConnection() throws DBConnectionException {
         if (size < POOLMINSIZE) {
             connectionPool.add(createConnection());
             addConnToPoolInNewThread(POOLDELTASIZE);
@@ -87,7 +87,8 @@ public class OracleDAOFactory extends DAOFactory {
         return connection;
     }
 
-    static void releaseConnection(Connection connection) throws SQLException {
+    @SuppressWarnings("WeakerAccess")
+    protected static void releaseConnection(Connection connection) throws SQLException {
         if (size > POOLMAXSIZE) {
             //delete connections from pool
             deleteConnFromPoolInNewThread();

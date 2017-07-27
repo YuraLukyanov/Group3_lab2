@@ -8,9 +8,6 @@ public class Basket {
     private TestAddProduct addProduct;
     private int position;
 
-    public Basket() {
-    }
-
     public TestAddProduct getAddProduct() {
         return addProduct;
     }

@@ -1,3 +1,5 @@
+package tests;
+
 import model.implementetion.services.CustomerManager;
 import model.interfaces.services.ICustomerManager;
 import model.pojo.Customer;
@@ -32,7 +34,8 @@ public class CustomerManagerTest {
         Customer customer4 = new Customer("User4", "Login4", "4567");
         Customer customer5 = new Customer("User5", "Login5", "5678");
 
-        int id1, id3;
+        int id1;
+        int id3;
 
         id1 = customerManager.add("User1", "Login1", "1234");
         customerManager.add("User2", "Login2", "2345");

@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class ServiceController {
 
-    Object serviceResponse;
+    private Object serviceResponse;
 
     public Object getCollection() {
         return serviceResponse;
@@ -35,9 +35,9 @@ public class ServiceController {
      * @param httpRequestServiceName  name of service
      * @param httpRequestServiceParam map with params of service
      */
-    protected void createResponseCollection(String httpRequestServiceName,
-                                            Map<String, String>
-                                                    httpRequestServiceParam) throws ServiceNotFoundException, WebServerException {
+    private void createResponseCollection(String httpRequestServiceName,
+                                          Map<String, String>
+                                                  httpRequestServiceParam) throws ServiceNotFoundException, WebServerException {
 
         Object result = null;
         try {
@@ -48,10 +48,10 @@ public class ServiceController {
             }
             String serviceClassName = service.getClass().getSimpleName();
 
-            //Find classes in package "controller.servicesControllers"
+            //Find classes in package "controller.services"
             // with annotations ControllerForService
             List<Class<?>> classes = CPScanner.scanClasses(new PackageNameFilter
-                    ("controller.servicesControllers"), new ClassFilter().appendAnnotation(ControllerForService.class));
+                    ("controller.services"), new ClassFilter().appendAnnotation(ControllerForService.class));
             for (Class<?> clazz : classes) {
                 ControllerForService controllerObj = clazz.getDeclaredAnnotation(ControllerForService.class);
 

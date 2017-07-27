@@ -2,6 +2,7 @@ package model.implementetion.services;
 
 import com.google.common.collect.Iterables;
 import model.DAOFactory;
+import model.implementetion.services.util.WrongLoginException;
 import model.interfaces.dao.CustomerDAO;
 import model.interfaces.services.ICustomerManager;
 import model.pojo.Customer;
@@ -51,10 +52,10 @@ public class CustomerManager implements ICustomerManager {
         return customerDAO.deleteAll();
     }
 
-    public Customer getByLogin(String admin) throws Exception {
+    public Customer getByLogin(String login) throws Exception {
         Customer result;
         Customer filter = new Customer();
-        filter.setLogin(admin);
+        filter.setLogin(login);
 
         Collection<Customer> collection = getByFilter(filter);
 
@@ -62,7 +63,7 @@ public class CustomerManager implements ICustomerManager {
         result = Iterables.get(collection, 0);
 
         if (result == null) {
-            throw new Exception("There is no user with this login.");
+            throw new WrongLoginException("There is no user with this login: " + login);
         }
 
         return result;

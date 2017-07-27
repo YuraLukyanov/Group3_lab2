@@ -1,6 +1,7 @@
 package model.implementetion.services;
 
 import com.google.common.collect.Iterables;
+import model.implementetion.oracle.exceptions.WrongIDException;
 import model.implementetion.services.util.ProductAndAmount;
 import model.interfaces.services.IAuthorization;
 import model.interfaces.services.IBusket;
@@ -32,7 +33,7 @@ public class Busket implements IBusket {
             return productsAndAmounts.size() - 1;   //return index of recently added element
         } else {
             LOGGER.error("Can't add - " + product.toString() + "to busket.");
-            throw new Exception("Can't add this product to busket.");
+            throw new WrongIDException("Can't add this product to busket.");
         }
     }
 
@@ -57,7 +58,7 @@ public class Busket implements IBusket {
         return true;
     }
 
-    public Order getOrder() {
+    public Order getOrder() throws Exception {
         return new Order(productsAndAmounts, authorization.getCustomer());
     }
 

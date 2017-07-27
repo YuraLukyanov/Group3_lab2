@@ -1,11 +1,8 @@
 package controller.test_services;
 
-/**
- * Created by Nikolion on 16.04.2017.
- */
 public class Product {
-    int id;
-    String type;
+    private int id;
+    private String type;
 
     public String getType() {
         return type;
