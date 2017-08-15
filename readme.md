@@ -1,4 +1,4 @@
-developers: Andrii Krishtop, Nikolai Zaretski
+developers: Andrii Kryshtop, Nikolai Zaretski
 
 scope: TBD
 
